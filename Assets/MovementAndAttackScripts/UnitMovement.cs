@@ -2,52 +2,43 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TacticsMove : MonoBehaviour 
+public class UnitMovement : MonoBehaviour
 {
-    public bool turn = false;
+    public bool unitTurn = false;
+    public bool moving = false;
+    public int moveRange = 5;
+    public float moveSpeed = 2;
+
+    private bool iAmNPC = false;
 
     List<Tile> selectableTiles = new List<Tile>();
-    GameObject[] tiles;
 
     Stack<Tile> path = new Stack<Tile>();
     Tile currentTile;
-
-    public bool moving = false;
-    public int moveRange = 5;
-    public float jumpHeight = 2;
-    public float moveSpeed = 2;
-    public float jumpVelocity = 4.5f;
 
     Vector3 velocity = new Vector3();
     Vector3 heading = new Vector3();
 
     float halfHeight = 0;
 
-    bool fallingDown = false;
-    bool jumpingUp = false;
-    bool movingEdge = false;
-    Vector3 jumpTarget;
 
     [HideInInspector]
     public Tile actualTargetTile;
 
-    protected void Init()
+    protected void Initialization()
     {
-        tiles = GameObject.FindGameObjectsWithTag("Tile");
+        halfHeight = GetComponent<Collider>().bounds.extents.y; //Ustawienie wysokosci jednostki nad ziemia
 
-        halfHeight = GetComponent<Collider>().bounds.extents.y;
-
-        TurnManager.AddUnit(this);
+        TurnManager.AddUnit(this); //Dodanie jednostki
     }
 
-    public void GetCurrentTile()
+    public void GetCurrentTile() //Aktualizacja pola na ktorym znajduje sie jednostka
     {
         currentTile = GetTargetTile(gameObject);
         currentTile.current = true;
-
     }
 
-    public Tile GetTargetTile(GameObject target)
+    public Tile GetTargetTile(GameObject target) //Zwraca pole ktore jest celem poruszjacej sie jednostki
     {
         RaycastHit hit;
         Tile tile = null;
@@ -60,54 +51,59 @@ public class TacticsMove : MonoBehaviour
         return tile;
     }
 
-    public void ComputeAdjacencyLists(float jumpHeight, Tile target)
+    public void ComputeAdjacencyLists(Tile target) //Oblicza sasiednie plytki kazdej z plytek
     {
-        //tiles = GameObject.FindGameObjectsWithTag("Tile");
+        GameObject[] tiles = GameObject.FindGameObjectsWithTag("Tile");
 
         foreach (GameObject tile in tiles)
         {
             Tile t = tile.GetComponent<Tile>();
-            t.FindNeighbors(jumpHeight, target);
+            t.FindNeighbors(target);
         }
     }
 
-    public void FindSelectableTiles()
+    public void FindSelectableTiles() //Oblicza plytki po ktorych moze poruszac sie jednostka
     {
-        ComputeAdjacencyLists(jumpHeight, null);
+        ComputeAdjacencyLists(null);
         GetCurrentTile();
 
         Queue<Tile> process = new Queue<Tile>();
 
         process.Enqueue(currentTile);
         currentTile.visited = true;
-        //currentTile.parent = ??  leave as null 
 
         while (process.Count > 0)
         {
             Tile t = process.Dequeue();
 
-            selectableTiles.Add(t);
-            t.selectable = true;
-			t.GetComponent<Renderer>().material.color = Color.red;
-			currentTile.GetComponent<Renderer>().material.color = Color.magenta;
-
-            if (t.distance < moveRange)
+            if (t.transform.position.y == 0)
             {
-                foreach (Tile tile in t.adjacencyList)
+                selectableTiles.Add(t);
+                t.selectable = true;
+                if (!iAmNPC)
                 {
-                    if (!tile.visited)
+                    t.GetComponent<Renderer>().material.color = Color.red;
+                    currentTile.GetComponent<Renderer>().material.color = Color.white;
+                }
+
+                if (t.distance < moveRange)
+                {
+                    foreach (Tile tile in t.adjacencyList)
                     {
-                        tile.parent = t;
-                        tile.visited = true;
-                        tile.distance = 1 + t.distance;
-                        process.Enqueue(tile);
+                        if (!tile.visited)
+                        {
+                            tile.parent = t;
+                            tile.visited = true;
+                            tile.distance = 1 + t.distance;
+                            process.Enqueue(tile);
+                        }
                     }
                 }
             }
         }
     }
 
-    public void MoveToTile(Tile tile)
+    public void MoveToTile(Tile tile) //Oblicza plytki na drodze do docelowej plytki
     {
         path.Clear();
         tile.target = true;
@@ -121,37 +117,28 @@ public class TacticsMove : MonoBehaviour
         }
     }
 
-    public void Move()
+    public void Move() //Ruch jednoski po mapie po wybraniu celu
     {
         if (path.Count > 0)
         {
             Tile t = path.Peek();
             Vector3 target = t.transform.position;
 
-            //Calculate the unit's position on top of the target tile
+            //Oblicza pozycje jednostki na gorze docelowej plytki(bloczka)
             target.y += halfHeight + t.GetComponent<Collider>().bounds.extents.y;
 
             if (Vector3.Distance(transform.position, target) >= 0.05f)
             {
-                bool jump = transform.position.y != target.y;
+                CalculateHeading(target);
+                SetHorizotalVelocity();
 
-                if (jump)
-                {
-                    Jump(target);
-                }
-                else
-                {
-                    CalculateHeading(target);
-                    SetHorizotalVelocity();
-                }
-
-                //Locomotion
+                //Poruszanie
                 transform.forward = heading;
                 transform.position += velocity * Time.deltaTime;
             }
             else
             {
-                //Tile center reached
+                //Docelowa plytka osiagnieta
                 transform.position = target;
                 path.Pop();
             }
@@ -161,14 +148,11 @@ public class TacticsMove : MonoBehaviour
             RemoveSelectableTiles();
             moving = false;
 
-
-            if(this.tag!="Player")
             TurnManager.EndTurn();
-
         }
     }
 
-    protected void RemoveSelectableTiles()
+    protected void RemoveSelectableTiles() //Czysci tablice plytek po ktorych moze poruszac sie jednostka
     {
         if (currentTile != null)
         {
@@ -179,119 +163,24 @@ public class TacticsMove : MonoBehaviour
         foreach (Tile tile in selectableTiles)
         {
             tile.Reset();
-
-			tile.GetComponent<Renderer>().material.color = Color.white;
+            tile.GetComponent<Renderer>().material.color = Color.white;
         }
 
         selectableTiles.Clear();
     }
 
-    void CalculateHeading(Vector3 target)
+    void CalculateHeading(Vector3 target) // Oblicza zwrot jednostki w strone w ktora sie porusza
     {
         heading = target - transform.position;
         heading.Normalize();
     }
 
-    void SetHorizotalVelocity()
+    void SetHorizotalVelocity() //Ustawia wektor predkosc poruszania jednostki
     {
         velocity = heading * moveSpeed;
     }
 
-    void Jump(Vector3 target)
-    {
-        if (fallingDown)
-        {
-            FallDownward(target);
-        }
-        else if (jumpingUp)
-        {
-            JumpUpward(target);
-        }
-        else if (movingEdge)
-        {
-            MoveToEdge();
-        }
-        else
-        {
-            PrepareJump(target);
-        }
-    }
-
-    void PrepareJump(Vector3 target)
-    {
-        float targetY = target.y;
-        target.y = transform.position.y;
-
-        CalculateHeading(target);
-
-        if (transform.position.y > targetY)
-        {
-            fallingDown = false;
-            jumpingUp = false;
-            movingEdge = true;
-
-            jumpTarget = transform.position + (target - transform.position) / 2.0f;
-        }
-        else
-        {
-            fallingDown = false;
-            jumpingUp = true;
-            movingEdge = false;
-
-            velocity = heading * moveSpeed / 3.0f;
-
-            float difference = targetY - transform.position.y;
-
-            velocity.y = jumpVelocity * (0.5f + difference / 2.0f);
-        }
-    }
-
-    void FallDownward(Vector3 target)
-    {
-        velocity += Physics.gravity * Time.deltaTime;
-
-        if (transform.position.y <= target.y)
-        {
-            fallingDown = false;
-            jumpingUp = false;
-            movingEdge = false;
-
-            Vector3 p = transform.position;
-            p.y = target.y;
-            transform.position = p;
-
-            velocity = new Vector3();
-        }
-    }
-
-    void JumpUpward(Vector3 target)
-    {
-        velocity += Physics.gravity * Time.deltaTime;
-
-        if (transform.position.y > target.y)
-        {
-            jumpingUp = false;
-            fallingDown = true;
-        }
-    }
-
-    void MoveToEdge()
-    {
-        if (Vector3.Distance(transform.position, jumpTarget) >= 0.05f)
-        {
-            SetHorizotalVelocity();
-        }
-        else
-        {
-            movingEdge = false;
-            fallingDown = true;
-
-            velocity /= 5.0f;
-            velocity.y = 1.5f;
-        }
-    }
-
-    protected Tile FindLowestF(List<Tile> list)
+    protected Tile FindLowestF(List<Tile> list) //Tworzy liste plytek o najmniejszym koszcie F 
     {
         Tile lowest = list[0];
 
@@ -308,7 +197,7 @@ public class TacticsMove : MonoBehaviour
         return lowest;
     }
 
-    protected Tile FindEndTile(Tile t)
+    protected Tile FindEndTile(Tile t) //Znajduje ostatnia plytke
     {
         Stack<Tile> tempPath = new Stack<Tile>();
 
@@ -333,9 +222,9 @@ public class TacticsMove : MonoBehaviour
         return endTile;
     }
 
-    protected void FindPath(Tile target)
+    protected void FindPath(Tile target) //Oblicza droge dla NPC do docelowej plytki
     {
-        ComputeAdjacencyLists(jumpHeight, target);
+        ComputeAdjacencyLists(target);
         GetCurrentTile();
 
         List<Tile> openList = new List<Tile>();
@@ -394,13 +283,19 @@ public class TacticsMove : MonoBehaviour
         Debug.Log("Path not found");
     }
 
-    public void BeginTurn()
+    public void BeginUnitTurn() //Rozpoczyna ture
     {
-        turn = true;
+        unitTurn = true;
     }
 
-    public void EndTurn()
+    public void EndUnitTurn() //Konczy ture
     {
-        turn = false;
+        unitTurn = false;
     }
+
+    public void IamNPC()
+    {
+        iAmNPC = true;
+    }
+
 }

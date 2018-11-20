@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerTurn : TacticsMove
+public class PlayerTurn : UnitMovement
 {
     bool AtackTurn = false;
     bool MoveTurn = false;
@@ -10,7 +10,7 @@ public class PlayerTurn : TacticsMove
     bool Alredy_moved = false;
     void Start () 
 	{
-        Init();
+        Initialization();
 	}
 	
 	// Update is called once per frame
@@ -18,7 +18,7 @@ public class PlayerTurn : TacticsMove
 	{
         Debug.DrawRay(transform.position, transform.forward);
 
-        if (!turn)
+        if (!unitTurn)
         {
             return;
         }

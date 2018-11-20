@@ -2,14 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NPCTurn : TacticsMove 
+public class NPCTurn : UnitMovement 
 {
     GameObject target;
 
 	// Use this for initialization
 	void Start () 
 	{
-        Init();
+        Initialization();
 	}
 	
 	// Update is called once per frame
@@ -17,7 +17,7 @@ public class NPCTurn : TacticsMove
 	{
         Debug.DrawRay(transform.position, transform.forward);
 
-        if (!turn)
+        if (!unitTurn)
         {
             return;
         }

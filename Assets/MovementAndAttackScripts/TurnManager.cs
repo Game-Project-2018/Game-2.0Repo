@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class TurnManager : MonoBehaviour 
 {
-    static Dictionary<string, List<TacticsMove>> units = new Dictionary<string, List<TacticsMove>>();
+    static Dictionary<string, List<UnitMovement>> units = new Dictionary<string, List<UnitMovement>>();
     static Queue<string> turnKey = new Queue<string>();
-    static Queue<TacticsMove> turnTeam = new Queue<TacticsMove>();
+    static Queue<UnitMovement> turnTeam = new Queue<UnitMovement>();
 
 	// Use this for initialization
 	void Start () 
@@ -25,9 +25,9 @@ public class TurnManager : MonoBehaviour
 
     static void InitTeamTurnQueue()
     {
-        List<TacticsMove> teamList = units[turnKey.Peek()];
+        List<UnitMovement> teamList = units[turnKey.Peek()];
 
-        foreach (TacticsMove unit in teamList)
+        foreach (UnitMovement unit in teamList)
         {
             turnTeam.Enqueue(unit);
         }
@@ -39,14 +39,14 @@ public class TurnManager : MonoBehaviour
     {
         if (turnTeam.Count > 0)
         {
-            turnTeam.Peek().BeginTurn();
+            turnTeam.Peek().BeginUnitTurn();
         }
     }
 
     public static void EndTurn()
     {
-        TacticsMove unit = turnTeam.Dequeue();
-        unit.EndTurn();
+        UnitMovement unit = turnTeam.Dequeue();
+        unit.EndUnitTurn();
 
         if (turnTeam.Count > 0)
         {
@@ -60,13 +60,13 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    public static void AddUnit(TacticsMove unit)
+    public static void AddUnit(UnitMovement unit)
     {
-        List<TacticsMove> list;
+        List<UnitMovement> list;
 
         if (!units.ContainsKey(unit.tag))
         {
-            list = new List<TacticsMove>();
+            list = new List<UnitMovement>();
             units[unit.tag] = list;
 
             if (!turnKey.Contains(unit.tag))
@@ -83,9 +83,9 @@ public class TurnManager : MonoBehaviour
     }
 
 
-    public static void RemoveUnit(TacticsMove unit)
+    public static void RemoveUnit(UnitMovement unit)
     {
-        List<TacticsMove> list;
+        List<UnitMovement> list;
 
 
             list = units[unit.tag];

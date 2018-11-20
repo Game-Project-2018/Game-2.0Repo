@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Tile : MonoBehaviour 
+public class Tile : MonoBehaviour
 {
     public bool walkable = true;
     public bool current = false;
@@ -21,21 +21,6 @@ public class Tile : MonoBehaviour
     public float g = 0;
     public float h = 0;
 
-	// Use this for initialization
-	void Start () 
-	{
-
-	}
-	
-	// Update is called once per frame
-	void Update () 
-	{
-
-
-
-
-	}
-
     public void Reset()
     {
         adjacencyList.Clear();
@@ -51,19 +36,19 @@ public class Tile : MonoBehaviour
         f = g = h = 0;
     }
 
-    public void FindNeighbors(float jumpHeight, Tile target)
+    public void FindNeighbors(Tile target)
     {
         Reset();
 
-        CheckTile(Vector3.forward, jumpHeight, target);
-        CheckTile(-Vector3.forward, jumpHeight, target);
-        CheckTile(Vector3.right, jumpHeight, target);
-        CheckTile(-Vector3.right, jumpHeight, target);
+        CheckTile(Vector3.forward, target);
+        CheckTile(-Vector3.forward, target);
+        CheckTile(Vector3.right, target);
+        CheckTile(-Vector3.right, target);
     }
 
-    public void CheckTile(Vector3 direction, float jumpHeight, Tile target)
+    public void CheckTile(Vector3 direction, Tile target)
     {
-        Vector3 halfExtents = new Vector3(0.25f, (1 + jumpHeight) / 2.0f, 0.25f);
+        Vector3 halfExtents = new Vector3(0.25f, 1 / 2.0f, 0.25f); //CZY BLAD?
         Collider[] colliders = Physics.OverlapBox(transform.position + direction, halfExtents);
 
         foreach (Collider item in colliders)
