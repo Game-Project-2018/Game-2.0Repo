@@ -5,27 +5,26 @@ using UnityEngine;
 public class NPCTurn : UnitMovement 
 {
     GameObject target;
+    bool alredyAtack = false;
+    bool alredyMoved = false;
 
-	// Use this for initialization
-	void Start () 
+    void Start () 
 	{
         Initialization();
 	}
 	
-	// Update is called once per frame
 	void Update () 
 	{
-        Debug.DrawRay(transform.position, transform.forward);
 
         if (!unitTurn)
         {
             return;
         }
 
-        if (!moving)
+        if (!moving && !alredyMoved)
         {
             FindNearestTarget();
-            Atack();
+            //Atack();
             CalculatePath();
             FindSelectableTiles();
             actualTargetTile.target = true;
@@ -33,8 +32,16 @@ public class NPCTurn : UnitMovement
         else
         {
             Move();
+
+            if (reachTarget)
+            {
+                reachTarget = false;
+                TurnManager.EndTurn();
+                //alredyMoved = true;
+            }
         }
-	}
+	    
+    }
 
     void CalculatePath()
     {

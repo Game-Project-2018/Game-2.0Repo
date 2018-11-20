@@ -9,6 +9,7 @@ public class UnitMovement : MonoBehaviour
     public int moveRange = 5;
     public float moveSpeed = 2;
 
+    protected bool reachTarget = false;
     private bool iAmNPC = false;
 
     List<Tile> selectableTiles = new List<Tile>();
@@ -147,8 +148,7 @@ public class UnitMovement : MonoBehaviour
         {
             RemoveSelectableTiles();
             moving = false;
-
-            TurnManager.EndTurn();
+            reachTarget = true;
         }
     }
 
