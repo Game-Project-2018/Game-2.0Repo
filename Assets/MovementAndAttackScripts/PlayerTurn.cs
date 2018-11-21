@@ -8,7 +8,7 @@ public class PlayerTurn : UnitMovement
     bool moveTurn = false;
     bool alredyAttack = false;
     bool alredyMoved = false;
-
+	public AcctivePlayer APlay;
     void Start()
     {
         Initialization();
@@ -16,10 +16,12 @@ public class PlayerTurn : UnitMovement
 
     void Update()
     {
-        if (!unitTurn)
-        {
-            return;
-        }
+		
+		if (!unitTurn) {
+			return;
+		} else {
+			APlay.Player = this.gameObject;
+		}
         //if(alredyMoved && alredyAttack)
 
         if (moveTurn)
