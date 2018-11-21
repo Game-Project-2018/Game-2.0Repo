@@ -61,6 +61,7 @@ public class PlayerTurn : UnitMovement
         alredyMoved = false;
         alredyAttack = false;
         reachTarget = false;
+		RemoveSelectableTiles ();
         TurnManager.EndTurn();
     }
 

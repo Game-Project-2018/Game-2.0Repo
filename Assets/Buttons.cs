@@ -22,4 +22,12 @@ public  class Buttons : MonoBehaviour {
 		Player = ActivePlayer1.Player;
 		Player.GetComponent<PlayerTurn> ().ButtonMove ();
 	}
+
+	public void End()
+	{
+		Player = ActivePlayer1.Player;
+		Player.GetComponent<PlayerTurn> ().ButtonEnd ();
+	}
+
+
 }
