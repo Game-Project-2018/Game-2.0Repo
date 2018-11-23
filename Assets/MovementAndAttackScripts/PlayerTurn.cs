@@ -21,7 +21,7 @@ public class PlayerTurn : UnitMovement
 			return;
 		}
         
-        if (UnitLive(this))
+        if(UnitLive(this))
         {
             TurnManager.EndTurn();
         }
@@ -68,5 +68,4 @@ public class PlayerTurn : UnitMovement
 		RemoveSelectableTiles ();
         TurnManager.EndTurn();
     }
-
 }

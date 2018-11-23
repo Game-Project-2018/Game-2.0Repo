@@ -300,6 +300,7 @@ public class UnitMovement : MonoBehaviour
             TurnManager.RemoveUnit(unit);
             return true;
         }
+
         return false;
     }
 
@@ -354,8 +355,9 @@ public class UnitMovement : MonoBehaviour
         //}
         if (hit.collider.GetComponent<BaseStats>().HP <= 0)
         {
-            Destroy(hit.collider.gameObject);
+            TurnManager.RemoveUnit(this);
         }
+
     }
 
     public void BeginUnitTurn() //Rozpoczyna ture

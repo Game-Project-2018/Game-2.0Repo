@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -86,13 +87,28 @@ public class TurnManager : MonoBehaviour
 
     public static void RemoveUnit(UnitMovement unit) //TEST
     {
-        foreach (UnitMovement unitMovement in teams[unit.tag])
+        List<UnitMovement> newTeamList = new List<UnitMovement>();
+        UnitMovement tempUnit = new UnitMovement();
+        foreach (String tag in teamTag)
         {
-            if (unitMovement.GetComponent<BaseStats>().HP <= 0)
+            foreach (UnitMovement unitMovement in teams[tag])
             {
-                teams[unit.tag].Remove(unit);
+                if (unitMovement.GetComponent<BaseStats>().HP <= 0)
+                {
+                    tempUnit = unitMovement;
+                }
             }
         }
+        foreach (UnitMovement unitMovement in teams[tempUnit.tag])
+        {
+            if (unitMovement.GetComponent<BaseStats>().HP > 0)
+            {
+                newTeamList.Add(unitMovement);
+            }
+        }
+        teams[tempUnit.tag].Clear();
+        teams[tempUnit.tag] = newTeamList;
+        Destroy(tempUnit.gameObject);
     }
 
     void FirstTurnPlayer()
