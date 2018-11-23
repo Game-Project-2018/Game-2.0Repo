@@ -9,9 +9,6 @@ public class UnitMovement : MonoBehaviour
     public int moveRange = 5;
     public float moveSpeed = 2;
 
-    protected bool reachTarget = false;
-    private bool iAmNPC = false;
-
     List<Tile> selectableTiles = new List<Tile>();
 
     Stack<Tile> path = new Stack<Tile>();
@@ -22,15 +19,32 @@ public class UnitMovement : MonoBehaviour
 
     float halfHeight = 0;
 
+    protected bool alredyAttack = false;
+    protected bool alredyMoved = false;
 
     [HideInInspector]
     public Tile actualTargetTile;
 
+    void Update()
+    {
+        TurnManager.CheckIfUnitIsAlive();
+    }
+
     protected void Initialization()
     {
-        halfHeight = GetComponent<Collider>().bounds.extents.y; //Ustawienie wysokosci jednostki nad ziemia
+        halfHeight = GetComponent<Collider>().bounds.extents.y; //Przypisanie wysokosci jednostki nad ziemia do zmiennej 
+
+        CenterPosition();
 
         TurnManager.AddUnit(this); //Dodanie jednostki
+    }
+
+    void CenterPosition() //Wysrodkowuje jednostke na polu na ktorym sie znajduje
+    {
+        Tile current = GetTargetTile(gameObject);
+        Vector3 tilePosition = current.transform.position;
+        tilePosition.y += halfHeight + current.GetComponent<Collider>().bounds.extents.y;
+        transform.position = tilePosition;
     }
 
     public void GetCurrentTile() //Aktualizacja pola na ktorym znajduje sie jednostka
@@ -81,7 +95,7 @@ public class UnitMovement : MonoBehaviour
             {
                 selectableTiles.Add(t);
                 t.selectable = true;
-                if (!iAmNPC)
+                if (tag == "Player")
                 {
                     t.GetComponent<Renderer>().material.color = Color.red;
                     currentTile.GetComponent<Renderer>().material.color = Color.white;
@@ -148,7 +162,8 @@ public class UnitMovement : MonoBehaviour
         {
             RemoveSelectableTiles();
             moving = false;
-            reachTarget = true;
+
+            alredyMoved = true;
         }
     }
 
@@ -283,6 +298,61 @@ public class UnitMovement : MonoBehaviour
         Debug.Log("Path not found");
     }
 
+    protected void CheckMouse()
+    {
+        if (Input.GetMouseButtonUp(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.collider.tag == "Tile")
+                {
+                    Tile t = hit.collider.GetComponent<Tile>();
+
+                    if (t.selectable)
+                    {
+                        t.GetComponent<Renderer>().material.color = Color.green;
+                        MoveToTile(t);
+                    }
+                }
+                else if (EnemyTag(hit) && !alredyAttack)
+                {
+                    AttackEnemy(hit);
+                }
+            }
+        }
+    }
+
+    private bool EnemyTag(RaycastHit hit)
+    {
+        if (hit.collider.tag != TurnManager.currentTeam)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private void AttackEnemy(RaycastHit hit)
+    {
+        Vector3 distance = new Vector3();
+        distance = hit.collider.transform.position - transform.position;
+        //if (Mathf.Abs(distance.magnitude)<=this.GetComponent<FieldOfView>().viewRadius)
+        //{
+        if (Mathf.Abs(distance.magnitude) > 1)
+            hit.collider.GetComponent<BaseStats>().HP -= this.GetComponent<BaseStats>().RangeAtack;
+        else
+            hit.collider.GetComponent<BaseStats>().HP -= this.GetComponent<BaseStats>().MeleAtack;
+        alredyAttack = true;
+        //}
+        if (hit.collider.GetComponent<BaseStats>().HP <= 0)
+        {
+            ////    Destroy(hit.collider.gameObject);
+        }
+    }
+
     public void BeginUnitTurn() //Rozpoczyna ture
     {
         unitTurn = true;
@@ -292,10 +362,4 @@ public class UnitMovement : MonoBehaviour
     {
         unitTurn = false;
     }
-
-    public void IamNPC()
-    {
-        iAmNPC = true;
-    }
-
 }

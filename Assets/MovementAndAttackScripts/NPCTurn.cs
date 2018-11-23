@@ -5,26 +5,25 @@ using UnityEngine;
 public class NPCTurn : UnitMovement 
 {
     GameObject target;
-    bool alredyAtack = false;
-    bool alredyMoved = false;
 
-    void Start () 
-	{
+    // Use this for initialization
+    void Start()
+    {
         Initialization();
-	}
-	
-	void Update () 
-	{
+    }
 
+    // Update is called once per frame
+    void Update()
+    {
         if (!unitTurn)
         {
             return;
         }
 
-        if (!moving && !alredyMoved)
+        if (!moving)
         {
             FindNearestTarget();
-            //Atack();
+            Atack();
             CalculatePath();
             FindSelectableTiles();
             actualTargetTile.target = true;
@@ -32,15 +31,12 @@ public class NPCTurn : UnitMovement
         else
         {
             Move();
-
-            if (reachTarget)
+            if(alredyMoved)
             {
-                reachTarget = false;
+                alredyMoved = false;
                 TurnManager.EndTurn();
-                //alredyMoved = true;
             }
         }
-	    
     }
 
     void CalculatePath()
@@ -70,9 +66,8 @@ public class NPCTurn : UnitMovement
         target = nearest;
     }
 
-    void Atack ()
+    void Atack()
     {
-
         Vector3 distance = new Vector3();
         distance = target.transform.position - transform.position;
 
@@ -81,5 +76,4 @@ public class NPCTurn : UnitMovement
         else
             target.GetComponent<BaseStats>().HP -= this.GetComponent<BaseStats>().MeleAtack;
     }
-
 }

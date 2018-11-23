@@ -2,34 +2,38 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TurnManager : MonoBehaviour 
+public class TurnManager : MonoBehaviour
 {
-    static Dictionary<string, List<UnitMovement>> units = new Dictionary<string, List<UnitMovement>>();
-    static Queue<string> turnKey = new Queue<string>();
-    static Queue<UnitMovement> turnTeam = new Queue<UnitMovement>();
+    static Dictionary<string, List<UnitMovement>> teams = new Dictionary<string, List<UnitMovement>>();
+    static Queue<string> teamTag = new Queue<string>();
+    static Queue<UnitMovement> turnOfTheTeam = new Queue<UnitMovement>();
+    static Queue<UnitMovement> units = new Queue<UnitMovement>();
 
-	// Use this for initialization
-	void Start () 
-	{
-		
-	}
-	
-	// Update is called once per frame
-	void Update () 
-	{
-        if (turnTeam.Count == 0)
-        {
-            InitTeamTurnQueue();
-        }
-	}
+    private bool firstTurn = true;
+    public static string currentTeam;
 
-    static void InitTeamTurnQueue()
+    void Update()
     {
-        List<UnitMovement> teamList = units[turnKey.Peek()];
+        if (turnOfTheTeam.Count == 0) //Jezeli kolejka pusta uruchom Inicjalizacje
+        {
+            if (firstTurn)
+            {
+                FirstTurnPlayer();
+                firstTurn = false;
+            }
+            InitializationTeamTurnQueue();
+        }
+    }
+
+    static void InitializationTeamTurnQueue()
+    {
+        List<UnitMovement> teamList = teams[teamTag.Peek()];
+
+        currentTeam = teamTag.Peek();
 
         foreach (UnitMovement unit in teamList)
         {
-            turnTeam.Enqueue(unit);
+            turnOfTheTeam.Enqueue(unit);
         }
 
         StartTurn();
@@ -37,61 +41,80 @@ public class TurnManager : MonoBehaviour
 
     public static void StartTurn()
     {
-        if (turnTeam.Count > 0)
+        if (turnOfTheTeam.Count > 0)
         {
-            turnTeam.Peek().BeginUnitTurn();
+            turnOfTheTeam.Peek().BeginUnitTurn();
         }
     }
 
     public static void EndTurn()
     {
-        UnitMovement unit = turnTeam.Dequeue();
-        unit.EndUnitTurn();
+        UnitMovement unitMovement = turnOfTheTeam.Dequeue();
+        unitMovement.EndUnitTurn();
 
-        if (turnTeam.Count > 0)
+        if (turnOfTheTeam.Count > 0)
         {
             StartTurn();
         }
         else
         {
-            string team = turnKey.Dequeue();
-            turnKey.Enqueue(team);
-            InitTeamTurnQueue();
+            string team = teamTag.Dequeue();
+            teamTag.Enqueue(team);
+            InitializationTeamTurnQueue();
         }
     }
 
-    public static void AddUnit(UnitMovement unit)
+    public static void AddUnit(UnitMovement unitMovement)
     {
         List<UnitMovement> list;
-
-        if (!units.ContainsKey(unit.tag))
+        if (!teams.ContainsKey(unitMovement.tag))
         {
             list = new List<UnitMovement>();
-            units[unit.tag] = list;
+            teams[unitMovement.tag] = list;
 
-            if (!turnKey.Contains(unit.tag))
+            if (!teamTag.Contains(unitMovement.tag))
             {
-                turnKey.Enqueue(unit.tag);
+                teamTag.Enqueue(unitMovement.tag);
             }
         }
         else
         {
-            list = units[unit.tag];
+            list = teams[unitMovement.tag];
         }
 
-        list.Add(unit);
+        list.Add(unitMovement);
+        units.Enqueue(unitMovement);
     }
 
-
-    public static void RemoveUnit(UnitMovement unit)
+    public static void RemoveUnit(UnitMovement unit) //TEST
     {
-        List<UnitMovement> list;
+        List<UnitMovement> list = teams[unit.tag];
 
-
-            list = units[unit.tag];
-
-
-        list.Remove(unit);
+        foreach (UnitMovement unitMovement in list)
+        {
+            if (unitMovement.GetComponent<BaseStats>().HP <= 0)
+                list.Remove(unit);
+        }
     }
 
+    public static void CheckIfUnitIsAlive() //TEST
+    {
+        foreach (UnitMovement unit in units)
+        {
+            if (unit.GetComponent<BaseStats>().HP <= 0)
+            {
+                RemoveUnit(unit);
+                units.Enqueue(unit);
+            }
+        }
+    }
+
+    void FirstTurnPlayer()
+    {
+        if ((teamTag.Peek() != "Player"))
+        {
+            string team = teamTag.Dequeue();
+            teamTag.Enqueue(team);
+        }
+    }
 }

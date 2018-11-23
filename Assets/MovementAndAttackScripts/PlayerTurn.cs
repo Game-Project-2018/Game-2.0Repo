@@ -6,9 +6,8 @@ public class PlayerTurn : UnitMovement
 {
     bool attackTurn = false;
     bool moveTurn = false;
-    bool alredyAttack = false;
-    bool alredyMoved = false;
 	public AcctivePlayer APlay;
+
     void Start()
     {
         Initialization();
@@ -17,16 +16,16 @@ public class PlayerTurn : UnitMovement
     void Update()
     {
 		
-		if (!unitTurn) {
+		if (!unitTurn)
+		{
 			return;
-		} else {
-			APlay.Player = this.gameObject;
 		}
-        //if(alredyMoved && alredyAttack)
 
-        if (moveTurn)
+        APlay.Player = this.gameObject;
+
+        if (moveTurn && !alredyMoved)
         {
-            if (!moving && !alredyMoved && !reachTarget)
+            if (!moving)
             {
                 FindSelectableTiles();
                 CheckMouse();
@@ -34,13 +33,12 @@ public class PlayerTurn : UnitMovement
             else
             {
                 Move();
-                if (reachTarget)
-                {
-                    alredyMoved = true;
-                }
-          
-                    //TurnManager.EndTurn(); //moveTurn = false;
             }
+        }
+
+        if (attackTurn && !alredyAttack)
+        {
+            CheckMouse();
         }
     }
 
@@ -58,33 +56,13 @@ public class PlayerTurn : UnitMovement
 
     public void ButtonEnd()
     {
+        attackTurn = false;
+        moveTurn = false;
         alredyMoved = false;
         alredyAttack = false;
-        reachTarget = false;
 		RemoveSelectableTiles ();
         TurnManager.EndTurn();
     }
 
-    void CheckMouse()
-    {
-        if (Input.GetMouseButtonUp(0))
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit))
-            {
-                if (hit.collider.tag == "Tile")
-                {
-                    Tile t = hit.collider.GetComponent<Tile>();
-
-                    if (t.selectable)
-                    {
-                        t.GetComponent<Renderer>().material.color = Color.green;
-                        MoveToTile(t);
-                    }
-                }
-            }
-        }
-    }
+    
 }
