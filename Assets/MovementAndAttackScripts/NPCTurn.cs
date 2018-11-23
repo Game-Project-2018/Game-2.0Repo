@@ -80,5 +80,9 @@ public class NPCTurn : UnitMovement
             target.GetComponent<BaseStats>().HP -= this.GetComponent<BaseStats>().RangeAtack;
         else
             target.GetComponent<BaseStats>().HP -= this.GetComponent<BaseStats>().MeleAtack;
+        if (target.GetComponent<Collider>().GetComponent<BaseStats>().HP <= 0)
+        {
+            TurnManager.RemoveUnit(this);
+        }
     }
 }
