@@ -7,7 +7,6 @@ public class TurnManager : MonoBehaviour
     static Dictionary<string, List<UnitMovement>> teams = new Dictionary<string, List<UnitMovement>>();
     static Queue<string> teamTag = new Queue<string>();
     static Queue<UnitMovement> turnOfTheTeam = new Queue<UnitMovement>();
-    static Queue<UnitMovement> units = new Queue<UnitMovement>();
 
     private bool firstTurn = true;
     public static string currentTeam;
@@ -83,28 +82,15 @@ public class TurnManager : MonoBehaviour
         }
 
         list.Add(unitMovement);
-        units.Enqueue(unitMovement);
     }
 
     public static void RemoveUnit(UnitMovement unit) //TEST
     {
-        List<UnitMovement> list = teams[unit.tag];
-
-        foreach (UnitMovement unitMovement in list)
+        foreach (UnitMovement unitMovement in teams[unit.tag])
         {
             if (unitMovement.GetComponent<BaseStats>().HP <= 0)
-                list.Remove(unit);
-        }
-    }
-
-    public static void CheckIfUnitIsAlive() //TEST
-    {
-        foreach (UnitMovement unit in units)
-        {
-            if (unit.GetComponent<BaseStats>().HP <= 0)
             {
-                RemoveUnit(unit);
-                units.Enqueue(unit);
+                teams[unit.tag].Remove(unit);
             }
         }
     }

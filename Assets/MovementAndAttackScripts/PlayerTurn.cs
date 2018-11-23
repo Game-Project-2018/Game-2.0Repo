@@ -20,6 +20,11 @@ public class PlayerTurn : UnitMovement
 		{
 			return;
 		}
+        
+        if (UnitLive(this))
+        {
+            TurnManager.EndTurn();
+        }
 
         APlay.Player = this.gameObject;
 
@@ -64,5 +69,4 @@ public class PlayerTurn : UnitMovement
         TurnManager.EndTurn();
     }
 
-    
 }

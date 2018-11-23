@@ -25,11 +25,6 @@ public class UnitMovement : MonoBehaviour
     [HideInInspector]
     public Tile actualTargetTile;
 
-    void Update()
-    {
-        TurnManager.CheckIfUnitIsAlive();
-    }
-
     protected void Initialization()
     {
         halfHeight = GetComponent<Collider>().bounds.extents.y; //Przypisanie wysokosci jednostki nad ziemia do zmiennej 
@@ -298,6 +293,16 @@ public class UnitMovement : MonoBehaviour
         Debug.Log("Path not found");
     }
 
+    protected bool UnitLive(UnitMovement unit)
+    {
+        if (unit.GetComponent<BaseStats>().HP <= 0)
+        {
+            TurnManager.RemoveUnit(unit);
+            return true;
+        }
+        return false;
+    }
+
     protected void CheckMouse()
     {
         if (Input.GetMouseButtonUp(0))
@@ -349,7 +354,7 @@ public class UnitMovement : MonoBehaviour
         //}
         if (hit.collider.GetComponent<BaseStats>().HP <= 0)
         {
-            ////    Destroy(hit.collider.gameObject);
+            Destroy(hit.collider.gameObject);
         }
     }
 

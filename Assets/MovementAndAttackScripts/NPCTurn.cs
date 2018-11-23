@@ -20,6 +20,11 @@ public class NPCTurn : UnitMovement
             return;
         }
 
+        if (UnitLive(this))
+        {
+            TurnManager.EndTurn();
+        }
+
         if (!moving)
         {
             FindNearestTarget();
