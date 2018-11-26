@@ -6,6 +6,17 @@ TagManager:
   tags:
   - Tile
   - NPC
+  - Slot
+  - Slots
+  - Tooltip
+  - MainInventory
+  - EquipmentSystem
+  - Canvas
+  - Item
+  - DraggingItem
+  - Panel
+  - ItemIcon
+  - Forest
   layers:
   - Default
   - TransparentFX

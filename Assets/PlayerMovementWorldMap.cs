@@ -13,6 +13,7 @@ public class PlayerMovementWorldMap : MonoBehaviour {
     private float hour = 0;
     private int day = 0;
     bool czyBylDzien = false;
+    int actualHour = 0, oldHour = 0, random = 0, modification = 0;
 
     const int LEFT_MOUSE_BUTTON = 0;
 
@@ -57,8 +58,27 @@ public class PlayerMovementWorldMap : MonoBehaviour {
         transform.LookAt(targetPosition);
         transform.position = Vector3.MoveTowards(transform.position, targetPosition, speed * Time.deltaTime);
 
+        //randomEvents
+        if(oldHour!=actualHour)
+        {
+            if(speed == 4)
+            {
+                modification = 0;
+            }
+            if(speed == 2)
+            {
+                modification = 10;
+            }
+            random = Random.Range(0, 100);
+            if(random >= 0 && random < 10 + modification)
+            {
+                StartZombieAttack();
+                StopPlayer();
+            }
+        }
+        oldHour = actualHour;
         //day and hour
-        int actualHour = (int)HourReturn();
+        actualHour = (int)HourReturn();
         if(actualHour==0 && czyBylDzien == false)
         {
             day++;
@@ -90,5 +110,11 @@ public class PlayerMovementWorldMap : MonoBehaviour {
     public void StopPlayer()
     {
         targetPosition = transform.position;
+    }
+
+    public Canvas ZombieAttack;
+    void StartZombieAttack()
+    {
+        ZombieAttack.enabled = true;
     }
 } 
