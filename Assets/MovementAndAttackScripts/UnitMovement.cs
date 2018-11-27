@@ -362,11 +362,13 @@ public class UnitMovement : MonoBehaviour
 
     public void BeginUnitTurn() //Rozpoczyna ture
     {
+        RingCurentUnitTurn.ringVisible = true;
         unitTurn = true;
     }
 
     public void EndUnitTurn() //Konczy ture
     {
+        RingCurentUnitTurn.ringVisible = false;
         unitTurn = false;
     }
 }

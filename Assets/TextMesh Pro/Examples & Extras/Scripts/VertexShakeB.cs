@@ -105,7 +105,7 @@ namespace TMPro.Examples
                     // Iterate through each character of the line.
                     for (int j = first; j <= last; j++)
                     {
-                        // Skip characters that are not visible and thus have no geometry to manipulate.
+                        // Skip characters that are not ringVisible and thus have no geometry to manipulate.
                         if (!textInfo.characterInfo[j].isVisible)
                             continue;
 

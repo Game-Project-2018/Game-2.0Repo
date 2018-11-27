@@ -108,7 +108,7 @@ namespace TMPro.Examples
                 {
                     TMP_CharacterInfo charInfo = textInfo.characterInfo[i];
 
-                    // Skip characters that are not visible and thus have no geometry to manipulate.
+                    // Skip characters that are not ringVisible and thus have no geometry to manipulate.
                     if (!charInfo.isVisible)
                         continue;
 

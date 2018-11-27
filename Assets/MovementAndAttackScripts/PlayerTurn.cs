@@ -27,6 +27,7 @@ public class PlayerTurn : UnitMovement
         }
 
         APlay.Player = gameObject;
+        RingCurentUnitTurn.GetUnitPosition(this);
 
         if (moveTurn && !alredyMoved)
         {
@@ -67,13 +68,17 @@ public class PlayerTurn : UnitMovement
     public void ButtonPreviousUnit()
     {
         if (!attackTurn && !moveTurn)
+        {
             TurnManager.PreviousUnit();
+        }      
     }
 
     public void ButtonNextUnit()
     {
         if (!attackTurn && !moveTurn)
+        {
             TurnManager.NextUnit();
+        }   
     }
 
     public void ButtonEndUnitTurn()

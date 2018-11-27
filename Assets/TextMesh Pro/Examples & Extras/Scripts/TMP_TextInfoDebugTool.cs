@@ -95,7 +95,7 @@ namespace TMPro.Examples
 
             for (int i = 0; i < textInfo.characterCount; i++)
             {
-                // Draw visible as well as invisible characters
+                // Draw ringVisible as well as invisible characters
                 TMP_CharacterInfo cInfo = textInfo.characterInfo[i];
 
                 bool isCharacterVisible = i >= m_TextComponent.maxVisibleCharacters ||
