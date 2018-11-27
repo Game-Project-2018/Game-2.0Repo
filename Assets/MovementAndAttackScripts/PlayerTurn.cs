@@ -6,7 +6,7 @@ public class PlayerTurn : UnitMovement
 {
     bool attackTurn = false;
     bool moveTurn = false;
-	public AcctivePlayer APlay;
+    public AcctivePlayer APlay;
 
     void Start()
     {
@@ -15,18 +15,18 @@ public class PlayerTurn : UnitMovement
 
     void Update()
     {
-		
-		if (!unitTurn)
-		{
-			return;
-		}
-        
-        if(UnitLive(this))
+
+        if (!unitTurn)
         {
-            TurnManager.EndTurn();
+            return;
         }
 
-        APlay.Player = this.gameObject;
+        if (UnitLive(this))
+        {
+            TurnManager.EndUnitTurn();
+        }
+
+        APlay.Player = gameObject;
 
         if (moveTurn && !alredyMoved)
         {
@@ -45,6 +45,11 @@ public class PlayerTurn : UnitMovement
         {
             CheckMouse();
         }
+
+        if (alredyMoved && alredyAttack)
+        {
+            TurnManager.EndUnitTurn();
+        }
     }
 
     public void ButtonAtack()
@@ -59,13 +64,35 @@ public class PlayerTurn : UnitMovement
         moveTurn = true;
     }
 
-    public void ButtonEnd()
+    public void ButtonPreviousUnit()
+    {
+        if (!attackTurn && !moveTurn)
+            TurnManager.PreviousUnit();
+    }
+
+    public void ButtonNextUnit()
+    {
+        if (!attackTurn && !moveTurn)
+            TurnManager.NextUnit();
+    }
+
+    public void ButtonEndUnitTurn()
     {
         attackTurn = false;
         moveTurn = false;
         alredyMoved = false;
         alredyAttack = false;
-		RemoveSelectableTiles ();
-        TurnManager.EndTurn();
+        RemoveSelectableTiles();
+        TurnManager.EndUnitTurn();
+    }
+
+    public void ButtonEndTeamTurn()
+    {
+        attackTurn = false;
+        moveTurn = false;
+        alredyMoved = false;
+        alredyAttack = false;
+        RemoveSelectableTiles();
+        TurnManager.EndTeamTurn();
     }
 }

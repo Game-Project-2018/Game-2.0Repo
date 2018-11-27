@@ -11,23 +11,39 @@ public  class Buttons : MonoBehaviour {
 		Player = null;
 	}
 
-	public   void Atack()
-	{
-		Player = ActivePlayer1.Player;
-		Player.GetComponent<PlayerTurn> ().ButtonAtack ();
-	}
+    public void Attack()
+    {
+        Player = ActivePlayer1.Player;
+        Player.GetComponent<PlayerTurn>().ButtonAtack();
+    }
 
-	public void Move()
-	{
-		Player = ActivePlayer1.Player;
-		Player.GetComponent<PlayerTurn> ().ButtonMove ();
-	}
+    public void Move()
+    {
+        Player = ActivePlayer1.Player;
+        Player.GetComponent<PlayerTurn>().ButtonMove();
+    }
 
-	public void End()
-	{
-		Player = ActivePlayer1.Player;
-		Player.GetComponent<PlayerTurn> ().ButtonEnd ();
-	}
+    public void PreviousUnit()
+    {
+        Player = ActivePlayer1.Player;
+        Player.GetComponent<PlayerTurn>().ButtonPreviousUnit();
+    }
 
+    public void NextUnit()
+    {
+        Player = ActivePlayer1.Player;
+        Player.GetComponent<PlayerTurn>().ButtonNextUnit();
+    }
 
+    public void EndUnitTurn()
+    {
+        Player = ActivePlayer1.Player;
+        Player.GetComponent<PlayerTurn>().ButtonEndUnitTurn();
+    }
+
+    public void EndTeamTurn()
+    {
+        Player = ActivePlayer1.Player;
+        Player.GetComponent<PlayerTurn>().ButtonEndTeamTurn();
+    }
 }

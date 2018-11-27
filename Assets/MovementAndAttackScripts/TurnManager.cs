@@ -36,10 +36,10 @@ public class TurnManager : MonoBehaviour
             turnOfTheTeam.Enqueue(unit);
         }
 
-        StartTurn();
+        StartUnitTurn();
     }
 
-    public static void StartTurn()
+    public static void StartUnitTurn()
     {
         if (turnOfTheTeam.Count > 0)
         {
@@ -47,20 +47,26 @@ public class TurnManager : MonoBehaviour
         }
     }
 
-    public static void EndTurn()
+    public static void EndTeamTurn()
     {
-        UnitMovement unitMovement = turnOfTheTeam.Dequeue();
-        unitMovement.EndUnitTurn();
-
         if (turnOfTheTeam.Count > 0)
+            turnOfTheTeam.Clear();
+        string team = teamTag.Dequeue();
+        teamTag.Enqueue(team);
+        InitializationTeamTurnQueue();
+    }
+
+    public static void EndUnitTurn()
+    {
+        UnitMovement unit = turnOfTheTeam.Dequeue();
+        unit.EndUnitTurn();
+        if (turnOfTheTeam.Count <= 0)
         {
-            StartTurn();
+            EndTeamTurn();
         }
         else
         {
-            string team = teamTag.Dequeue();
-            teamTag.Enqueue(team);
-            InitializationTeamTurnQueue();
+            StartUnitTurn();
         }
     }
 
@@ -85,7 +91,7 @@ public class TurnManager : MonoBehaviour
         list.Add(unitMovement);
     }
 
-    public static void RemoveUnit(UnitMovement unit) //TEST
+    public static void RemoveUnit(UnitMovement unit)
     {
         List<UnitMovement> newTeamList = new List<UnitMovement>();
         UnitMovement tempUnit = new UnitMovement();
@@ -109,6 +115,26 @@ public class TurnManager : MonoBehaviour
         teams[tempUnit.tag].Clear();
         teams[tempUnit.tag] = newTeamList;
         Destroy(tempUnit.gameObject);
+    }
+
+    public static void PreviousUnit()
+    {
+        UnitMovement unit;
+        for (int i = 0; i < turnOfTheTeam.Count - 1; i++)
+        {
+            unit = turnOfTheTeam.Dequeue();
+            unit.EndUnitTurn();
+            turnOfTheTeam.Enqueue(unit);
+        }
+        StartUnitTurn();
+    }
+
+    public static void NextUnit()
+    {
+        UnitMovement unit = turnOfTheTeam.Dequeue();
+        unit.EndUnitTurn();
+        turnOfTheTeam.Enqueue(unit);
+        StartUnitTurn();
     }
 
     void FirstTurnPlayer()

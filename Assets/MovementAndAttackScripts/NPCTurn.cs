@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NPCTurn : UnitMovement 
+public class NPCTurn : UnitMovement
 {
     GameObject target;
 
@@ -22,7 +22,7 @@ public class NPCTurn : UnitMovement
 
         if (UnitLive(this))
         {
-            TurnManager.EndTurn();
+            TurnManager.EndUnitTurn();
         }
 
         if (!moving)
@@ -36,10 +36,13 @@ public class NPCTurn : UnitMovement
         else
         {
             Move();
-            if(alredyMoved)
+            if (alredyMoved)
             {
+                if (!alredyAttack)
+                    Atack();
+                alredyAttack = false;
                 alredyMoved = false;
-                TurnManager.EndTurn();
+                TurnManager.EndUnitTurn();
             }
         }
     }
@@ -77,9 +80,16 @@ public class NPCTurn : UnitMovement
         distance = target.transform.position - transform.position;
 
         if (Mathf.Abs(distance.magnitude) > 1)
+        {
             target.GetComponent<BaseStats>().HP -= this.GetComponent<BaseStats>().RangeAtack;
+            alredyAttack = true;
+        }
         else
+        {
             target.GetComponent<BaseStats>().HP -= this.GetComponent<BaseStats>().MeleAtack;
+            alredyAttack = true;
+        }
+
         if (target.GetComponent<Collider>().GetComponent<BaseStats>().HP <= 0)
         {
             TurnManager.RemoveUnit(this);
