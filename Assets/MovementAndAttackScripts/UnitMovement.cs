@@ -345,14 +345,14 @@ public class UnitMovement : MonoBehaviour
     {
         Vector3 distance = new Vector3();
         distance = hit.collider.transform.position - transform.position;
-        //if (Mathf.Abs(distance.magnitude)<=this.GetComponent<FieldOfView>().viewRadius)
-        //{
+        if (Mathf.Abs(distance.magnitude)<=this.GetComponent<FieldOfView>().viewRadius)
+        {
         if (Mathf.Abs(distance.magnitude) > 1)
             hit.collider.GetComponent<BaseStats>().HP -= this.GetComponent<BaseStats>().RangeAtack;
         else
             hit.collider.GetComponent<BaseStats>().HP -= this.GetComponent<BaseStats>().MeleAtack;
         alredyAttack = true;
-        //}
+        }
         if (hit.collider.GetComponent<BaseStats>().HP <= 0)
         {
             TurnManager.RemoveUnit(this);

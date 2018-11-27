@@ -17,6 +17,7 @@ TagManager:
   - Panel
   - ItemIcon
   - Forest
+  - PlayerButtons
   layers:
   - Default
   - TransparentFX

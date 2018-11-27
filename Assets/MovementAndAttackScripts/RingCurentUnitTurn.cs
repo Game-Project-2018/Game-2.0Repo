@@ -12,7 +12,7 @@ public class RingCurentUnitTurn : MonoBehaviour
 
 	void Start()
 	{
-	    ringPosition.y = transform.position.y;
+	    ringPosition.y = transform.position.y; //0.6
 	}
 
     void Update()

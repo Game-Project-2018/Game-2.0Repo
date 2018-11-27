@@ -11,6 +11,7 @@ public class TurnManager : MonoBehaviour
 
     private bool firstTurn = true;
     public static string currentTeam;
+    public static string currentUnit;
 
     void Update()
     {
@@ -43,6 +44,7 @@ public class TurnManager : MonoBehaviour
     {
         if (turnOfTheTeam.Count > 0)
         {
+            currentUnit = turnOfTheTeam.Peek().name;
             turnOfTheTeam.Peek().BeginUnitTurn();
         }
     }
