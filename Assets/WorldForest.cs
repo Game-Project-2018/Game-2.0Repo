@@ -6,6 +6,7 @@ public class WorldForest : MonoBehaviour {
 
     public int defaultspeed = 4;
     public int affectedspeed = 2;
+    public int modification = 10;
 
     void OnTriggerEnter(Collider Player)
     {

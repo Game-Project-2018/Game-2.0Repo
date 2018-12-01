@@ -20,7 +20,7 @@ public class MapView : MonoBehaviour {
     void Start () {
         ScreenWidth = Screen.width;
         ScreenHeight = Screen.height;
-        transform.position = player.position + offset;
+        //transform.position = player.position + offset;
         
     }
 	

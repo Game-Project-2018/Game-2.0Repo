@@ -41,13 +41,27 @@ public class PlayerMovementWorldMap : MonoBehaviour {
 
     void SetTargetPosition()
     {
-        Plane plane = new Plane(Vector3.up, transform.position);
+        //Plane plane = new Plane(Vector3.up, transform.position);
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        float point = 0f;
+        //float point = 0f;
+        RaycastHit hit;
 
-        if (plane.Raycast(ray, out point))
+        /*if (plane.Raycast(ray, out point))
         {
             targetPosition = ray.GetPoint(point);
+        }*/
+
+        if(Physics.Raycast(ray, out hit, 1000))
+        {
+            float distance = transform.position.magnitude - hit.point.magnitude;
+            if(distance<0)
+            {
+                distance *= -1;
+            }
+            if (hit.transform.gameObject.tag == "City" && distance < 20f)
+            {
+                targetPosition = hit.point;
+            }
         }
 
         isMoving = true;
@@ -61,14 +75,14 @@ public class PlayerMovementWorldMap : MonoBehaviour {
         //randomEvents
         if(oldHour!=actualHour)
         {
-            if(speed == 4)
+            /*if(speed == 4)
             {
                 modification = 0;
             }
             if(speed == 2)
             {
                 modification = 10;
-            }
+            }*/
             random = Random.Range(0, 100);
             if(random >= 0 && random < 10 + modification)
             {
