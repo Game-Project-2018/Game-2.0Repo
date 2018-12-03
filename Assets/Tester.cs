@@ -9,7 +9,7 @@ public class Tester : MonoBehaviour {
 	}
 	void Update ()
 	{
-		Data_static.Test_number++;
-		Debug.Log (Data_static.Test_number);
+		//Data_static.Test_number++;
+		//Debug.Log (Data_static.Test_number);
 	}
 }

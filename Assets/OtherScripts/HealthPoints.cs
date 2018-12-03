@@ -9,6 +9,6 @@ public class HealthPoints : MonoBehaviour {
 
     void Update()
     {
-        hpText.text = UnitHP.unitHP;
+       // hpText.text = UnitHP.unitHP;
     }
 }
