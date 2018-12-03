@@ -58,7 +58,7 @@ public class PlayerMovementWorldMap : MonoBehaviour {
             {
                 distance *= -1;
             }
-            if (hit.transform.gameObject.tag == "City" && distance < 20f)
+            if (hit.transform.gameObject.tag == "City" && distance < 20f) //chodzenie tylko do miasta nie dalszego niż 20 jednostek odległości
             {
                 targetPosition = hit.point;
             }
@@ -75,14 +75,15 @@ public class PlayerMovementWorldMap : MonoBehaviour {
         //randomEvents
         if(oldHour!=actualHour)
         {
-            /*if(speed == 4)
+            if(speed != 4)
+            {
+                modification = (int)speed*10;
+            }
+            else
             {
                 modification = 0;
             }
-            if(speed == 2)
-            {
-                modification = 10;
-            }*/
+            
             random = Random.Range(0, 100);
             if(random >= 0 && random < 10 + modification)
             {
