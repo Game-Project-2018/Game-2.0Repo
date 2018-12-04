@@ -107,6 +107,7 @@ public class TurnManager : MonoBehaviour
                 }
             }
         }
+
         foreach (UnitMovement unitMovement in teams[tempUnit.tag])
         {
             if (unitMovement.GetComponent<BaseStats>().HP > 0)
@@ -114,6 +115,7 @@ public class TurnManager : MonoBehaviour
                 newTeamList.Add(unitMovement);
             }
         }
+
         teams[tempUnit.tag].Clear();
         teams[tempUnit.tag] = newTeamList;
         Destroy(tempUnit.gameObject);

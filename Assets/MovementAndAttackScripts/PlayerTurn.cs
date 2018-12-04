@@ -5,8 +5,7 @@ using UnityEngine.UI;
 
 public class PlayerTurn : UnitMovement
 {
-    bool attackTurn = false;
-    bool moveTurn = false;
+
     public AcctivePlayer APlay;
 
     void Start()
@@ -16,7 +15,6 @@ public class PlayerTurn : UnitMovement
 
     void Update()
     {
-
         if (!unitTurn)
         {
             return;
@@ -29,13 +27,13 @@ public class PlayerTurn : UnitMovement
 
         APlay.Player = gameObject;
         RingCurentUnitTurn.GetUnitPosition(this);
+        RingCurentUnitTurn.SetActiveRing();
 
-        if (moveTurn && !alredyMoved)
+        if (!alredyMoved)
         {
             if (!moving)
             {
                 FindSelectableTiles();
-                CheckMouse();
             }
             else
             {
@@ -43,63 +41,53 @@ public class PlayerTurn : UnitMovement
             }
         }
 
-        if (attackTurn && !alredyAttack)
+        if ((!alredyAttack || !alredyMoved) && !moving)
         {
             CheckMouse();
         }
 
         if (alredyMoved && alredyAttack)
         {
+            RingCurentUnitTurn.SetDeactiveRing();
             TurnManager.EndUnitTurn();
         }
     }
 
-    public void ButtonAtack()
-    {
-        attackTurn = true;
-        moveTurn = false;
-    }
-
-    public void ButtonMove()
-    {
-        attackTurn = false;
-        moveTurn = true;
-    }
-
     public void ButtonPreviousUnit()
     {
-        if (!attackTurn && !moveTurn)
+        if (!alredyAttack && !alredyMoved)
         {
+            RingCurentUnitTurn.SetDeactiveRing();
             TurnManager.PreviousUnit();
+            RemoveSelectableTiles();
         }      
     }
 
     public void ButtonNextUnit()
     {
-        if (!attackTurn && !moveTurn)
+        if (!alredyAttack && !alredyMoved)
         {
+            RingCurentUnitTurn.SetDeactiveRing();
             TurnManager.NextUnit();
+            RemoveSelectableTiles();
         }   
     }
 
     public void ButtonEndUnitTurn()
     {
-        attackTurn = false;
-        moveTurn = false;
         alredyMoved = false;
         alredyAttack = false;
         RemoveSelectableTiles();
+        RingCurentUnitTurn.SetDeactiveRing();
         TurnManager.EndUnitTurn();
     }
 
     public void ButtonEndTeamTurn()
     {
-        attackTurn = false;
-        moveTurn = false;
         alredyMoved = false;
         alredyAttack = false;
         RemoveSelectableTiles();
+        RingCurentUnitTurn.SetDeactiveRing();
         TurnManager.EndTeamTurn();
     }
-
 }

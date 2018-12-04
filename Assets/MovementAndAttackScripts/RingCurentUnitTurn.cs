@@ -1,18 +1,19 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text;
 using UnityEngine;
 
 public class RingCurentUnitTurn : MonoBehaviour
 {
-    public static bool ringVisible = false;
     private static string unitTag;
     private static Vector3 ringPosition;
+    public static float ringStartHeight = 0.6f;
 
-	void Start()
+    void Start()
 	{
-	    ringPosition.y = transform.position.y; //0.6
+	    ringPosition.y = ringStartHeight;
 	}
 
     void Update()
@@ -22,6 +23,16 @@ public class RingCurentUnitTurn : MonoBehaviour
 	        transform.position = ringPosition;
 	    }
 	}
+
+    public static void SetActiveRing()
+    {
+        ringPosition.y = ringStartHeight;
+    }
+
+    public static void SetDeactiveRing()
+    {
+        ringPosition.y = -100;
+    }
 
     public static void GetUnitPosition(UnitMovement unit)
     {

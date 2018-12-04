@@ -9,6 +9,9 @@ public class UnitMovement : MonoBehaviour
     public int moveRange = 5;
     public float moveSpeed = 2;
 
+    enum SelectedObj{none,teammate,enemy,tile};
+    SelectedObj currentSelectedObj = SelectedObj.none;
+
     List<Tile> selectableTiles = new List<Tile>();
 
     Stack<Tile> path = new Stack<Tile>();
@@ -92,7 +95,8 @@ public class UnitMovement : MonoBehaviour
                 t.selectable = true;
                 if (tag == "Player")
                 {
-                    t.GetComponent<Renderer>().material.color = Color.red;
+                    if(t.GetComponent<Renderer>().material.color != Color.blue)
+                        t.GetComponent<Renderer>().material.color = Color.red;
                     currentTile.GetComponent<Renderer>().material.color = Color.white;
                 }
 
@@ -306,7 +310,7 @@ public class UnitMovement : MonoBehaviour
 
     protected void CheckMouse()
     {
-        if (Input.GetMouseButtonUp(0))
+        if (Input.GetMouseButtonUp(1))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -319,16 +323,54 @@ public class UnitMovement : MonoBehaviour
 
                     if (t.selectable)
                     {
-                        t.GetComponent<Renderer>().material.color = Color.green;
-                        MoveToTile(t);
+                        if (currentSelectedObj == SelectedObj.tile && t.GetComponent<Renderer>().material.color == Color.blue)
+                        {
+                            t.GetComponent<Renderer>().material.color = Color.green;
+                            currentSelectedObj = SelectedObj.none;
+                            MoveToTile(t);
+                        }
+                        currentSelectedObj = SelectedObj.tile;
+
+                        if (t.GetComponent<Renderer>().material.color != Color.blue && t.GetComponent<Renderer>().material.color != Color.green)
+                        {
+                            foreach (Tile tile in selectableTiles)
+                            {
+                                if (tile.GetComponent<Renderer>().material.color == Color.blue)
+                                {
+                                    tile.GetComponent<Renderer>().material.color = Color.red;
+                                }
+                            }
+                            t.GetComponent<Renderer>().material.color = Color.blue;
+                        }
                     }
                 }
                 else if (EnemyTag(hit) && !alredyAttack)
                 {
-                    AttackEnemy(hit);
+                    RingSelectedEnemy.SetActiveRing();
+                    if (currentSelectedObj == SelectedObj.enemy && InTheSamePosition(hit))
+                    {
+                        currentSelectedObj = SelectedObj.none;
+                        RingSelectedEnemy.SetDeactiveRing();
+                        AttackEnemy(hit);
+                    }
+                    currentSelectedObj = SelectedObj.enemy;
+                    
+                    if (hit.collider.gameObject.transform.position != RingSelectedEnemy.GetRingPosition())
+                    {
+                        RingSelectedEnemy.GetEnemyPosition(hit.collider.GetComponent<UnitMovement>());
+                    }
                 }
             }
         }
+    }
+
+    private bool InTheSamePosition(RaycastHit hit)
+    {
+        if (hit.collider.gameObject.transform.position.x == RingSelectedEnemy.GetRingPosition().x &&
+            hit.collider.gameObject.transform.position.z == RingSelectedEnemy.GetRingPosition().z)
+            return true;
+
+            return false;
     }
 
     private bool EnemyTag(RaycastHit hit)
@@ -355,6 +397,7 @@ public class UnitMovement : MonoBehaviour
         }
         if (hit.collider.GetComponent<BaseStats>().HP <= 0)
         {
+            RingSelectedEnemy.SetDeactiveRing();
             TurnManager.RemoveUnit(this);
         }
 
@@ -362,13 +405,11 @@ public class UnitMovement : MonoBehaviour
 
     public void BeginUnitTurn() //Rozpoczyna ture
     {
-        RingCurentUnitTurn.ringVisible = true;
         unitTurn = true;
     }
 
     public void EndUnitTurn() //Konczy ture
     {
-        RingCurentUnitTurn.ringVisible = false;
         unitTurn = false;
     }
 }
