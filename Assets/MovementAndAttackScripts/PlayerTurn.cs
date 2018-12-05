@@ -15,15 +15,19 @@ public class PlayerTurn : UnitMovement
 
     void Update()
     {
-        if (!unitTurn)
-        {
-            return;
-        }
+
 
         if (UnitLive(this))
         {
             TurnManager.EndUnitTurn();
         }
+
+        if (!unitTurn)
+        {
+            return;
+        }
+
+   
 
         APlay.Player = gameObject;
         RingCurentUnitTurn.GetUnitPosition(this);

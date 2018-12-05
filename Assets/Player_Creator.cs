@@ -14,11 +14,17 @@ public class Player_Creator : MonoBehaviour {
 			//return;
 		Debug.Log(Data_static.Player_tab.Count);
 		if (Data_static.Player_tab.Count == 0) {
-			Destroy (GetComponent<GameObject> ());
-			Debug.Log("Delete");
-		}
-		 if (Data_static.Player_tab[i].name != "drunk")
-			Destroy(GetComponent<GameObject>());
+            GetComponent<BaseStats>().HP = -1;
+            Debug.Log("Delete");
+            //Destroy(GetComponent<GameObject>(),0);
+        }
+        else
+        {
+            GetComponent<BaseStats>().HP = GetComponent<BaseStats>().MaxHP;
+        }
+		 //if (Data_static.Player_tab[i].name != "drunk")
+			
+
 	}
 	
 

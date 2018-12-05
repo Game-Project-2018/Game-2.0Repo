@@ -11,7 +11,7 @@ public class BaseStats : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        HP = MaxHP;
+        
 	}
 	
 	// Update is called once per frame
