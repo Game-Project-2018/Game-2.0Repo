@@ -16,7 +16,7 @@ public class Player_Creator : MonoBehaviour {
 		if (Data_static.Player_tab.Count == 0) {
             GetComponent<BaseStats>().HP = -1;
             Debug.Log("Delete");
-            //Destroy(GetComponent<GameObject>(),0);
+            Destroy(gameObject);
         }
         else
         {
