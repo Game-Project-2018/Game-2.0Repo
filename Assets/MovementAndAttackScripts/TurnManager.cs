@@ -7,7 +7,7 @@ public class TurnManager : MonoBehaviour
 {
     static Dictionary<string, List<UnitMovement>> teams = new Dictionary<string, List<UnitMovement>>();
     static Queue<string> teamTag = new Queue<string>();
-    static Queue<UnitMovement> turnOfTheTeam = new Queue<UnitMovement>();
+    static Queue<UnitMovement> turnOfTheTeam = new Queue<UnitMovement>();    //!!!TO DO: PRZEROBIC NA LISTE!!!
 
     private bool firstTurn = true;
     public static string currentTeam;
@@ -148,5 +148,20 @@ public class TurnManager : MonoBehaviour
             string team = teamTag.Dequeue();
             teamTag.Enqueue(team);
         }
+    }
+
+    void EndOfGame()
+    {
+
+    }
+
+    void GoToWorldMap()
+    {
+
+    }
+
+    public static void CheckIfEndOfBattle(UnitMovement unit)
+    {
+
     }
 }
