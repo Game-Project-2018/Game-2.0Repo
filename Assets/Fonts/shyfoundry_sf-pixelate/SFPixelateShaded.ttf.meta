@@ -1,0 +1,24 @@
+fileFormatVersion: 2
+guid: 3c054f8b8af8a8c42be14a9104587721
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: SF Pixelate Shaded
+  fontNames:
+  - SF Pixelate Shaded
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 33261c5bb8dbb7d47bae5911c856f038, type: 3}
+  - {fileID: 12800000, guid: 215503bcd96ef3e4e9191291f08b6b43, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
