@@ -13,7 +13,12 @@ public class PlayerMovementWorldMap : MonoBehaviour {
     private float hour = 0;
     private int day = 0;
     bool czyBylDzien = false;
+    bool czyBylFood = false;
     int actualHour = 0, oldHour = 0, random = 0, modification = 0;
+    public Text foodCounter;
+    public int food;
+    public int teamMembers;
+    public GameObject FOG;
 
     const int LEFT_MOUSE_BUTTON = 0;
 
@@ -75,7 +80,8 @@ public class PlayerMovementWorldMap : MonoBehaviour {
         //randomEvents
         if(oldHour!=actualHour)
         {
-            if(speed != 4)
+            MoveFOG();
+            if (speed != 4)
             {
                 modification = (int)speed*10;
             }
@@ -83,8 +89,9 @@ public class PlayerMovementWorldMap : MonoBehaviour {
             {
                 modification = 0;
             }
-            
-            random = Random.Range(0, 100);
+
+            //random = Random.Range(0, 100);
+            random = -20;
             if(random >= 0 && random < 10 + modification)
             {
                 StartZombieAttack();
@@ -101,6 +108,21 @@ public class PlayerMovementWorldMap : MonoBehaviour {
         }
         dayCounter.text = "hour: " + actualHour.ToString("0") + ", " + "day: " + day.ToString("0");
 
+        //food every 6 hours
+        if(actualHour%6==0 && czyBylFood == false)
+        {
+            czyBylFood = true;
+            food = food - teamMembers;
+            //food = food - Data_static.Player_tab.Count;
+            if (food < 0)
+            {
+                food = 0;
+            }
+            foodCounter.text = "Supplies: " + food.ToString("0");
+        }
+        
+
+
         if (transform.position == targetPosition)
         {
             isMoving = false;
@@ -111,6 +133,11 @@ public class PlayerMovementWorldMap : MonoBehaviour {
     {
         //hour
         hour += 0.5f * Time.deltaTime;
+        if (hour%6>=5.9f && czyBylFood == true)
+        {
+            czyBylFood = false;
+        }
+
         if (hour >= 24f)
         {
             czyBylDzien = false;
@@ -131,5 +158,14 @@ public class PlayerMovementWorldMap : MonoBehaviour {
     void StartZombieAttack()
     {
         ZombieAttack.enabled = true;
+    }
+
+    void MoveFOG()
+    {
+        Vector3 destiny;
+        destiny.x = FOG.transform.position.x + 2;
+        destiny.z = FOG.transform.position.z + 2;
+        destiny.y = FOG.transform.position.y;
+        FOG.transform.position = Vector3.MoveTowards(FOG.transform.position, destiny, 1000 * Time.deltaTime);
     }
 } 
