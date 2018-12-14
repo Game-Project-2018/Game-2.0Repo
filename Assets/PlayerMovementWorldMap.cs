@@ -66,10 +66,11 @@ public class PlayerMovementWorldMap : MonoBehaviour {
             if (hit.transform.gameObject.tag == "City" && distance < 20f) //chodzenie tylko do miasta nie dalszego niż 20 jednostek odległości
             {
                 targetPosition = hit.point;
+                isMoving = true;
             }
         }
 
-        isMoving = true;
+        
     }
 
     void MovePlayer()
