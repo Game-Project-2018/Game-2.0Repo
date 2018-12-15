@@ -12,7 +12,7 @@ public class Player_Creator : MonoBehaviour {
 		//Mesh drunk = (Mesh)AssetDatabase.LoadAssetAtPath ("Assets/Obj/drunk.obj",typeof(Mesh));
 		//if (i >= Data_static.Player_tab.Count)
 			//return;
-		Debug.Log(Data_static.Player_tab.Count);
+		//Debug.Log(Data_static.Player_tab.Count);
 		if (Data_static.Player_tab.Count == 0) {
             GetComponent<BaseStats>().HP = -1;
             Debug.Log("Delete");
