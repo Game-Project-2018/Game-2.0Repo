@@ -15,13 +15,32 @@ public class HpShow : MonoBehaviour {
 
 
     void Start () {
-		
-	}
+        HPSliderHighlighted.gameObject.SetActive(false);
+
+    }
 	
 	
 	void Update () {
         HPSliderPlayer.maxValue = ActivePlayer.GetComponent<AcctivePlayer>().Player.GetComponent<BaseStats>().MaxHP;
         HPSliderPlayer.value = ActivePlayer.GetComponent<AcctivePlayer>().Player.GetComponent<BaseStats>().HP;
         HPtextPlayer.text = ActivePlayer.GetComponent<AcctivePlayer>().Player.GetComponent<BaseStats>().HP.ToString() + " /" + ActivePlayer.GetComponent<AcctivePlayer>().Player.GetComponent<BaseStats>().MaxHP;
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            if (hit.collider.tag == "NPC" || hit.collider.tag == "Player")
+            {
+                HPtextHighlighted.text = hit.collider.name + " " + hit.collider.GetComponent<BaseStats>().HP.ToString() + "/" + hit.collider.GetComponent<BaseStats>().MaxHP;
+                HPSliderHighlighted.gameObject.SetActive(true);
+                HPSliderHighlighted.maxValue = hit.collider.GetComponent<BaseStats>().MaxHP;
+                HPSliderHighlighted.value = hit.collider.GetComponent<BaseStats>().HP;
+            }
+            else
+            {
+                HPtextHighlighted.text = null;
+                HPSliderHighlighted.gameObject.SetActive(false);
+            }
+        }
     }
 }
