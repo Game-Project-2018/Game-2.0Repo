@@ -9,6 +9,6 @@ public class UnitName : MonoBehaviour
 
     void Update()
     {
-        unitName.text = TurnManager.currentUnit;
+        unitName.text = TurnManager.GetCurrentUnit();
     }
 }

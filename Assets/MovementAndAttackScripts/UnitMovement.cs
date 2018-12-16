@@ -375,7 +375,7 @@ public class UnitMovement : MonoBehaviour
 
     private bool EnemyTag(RaycastHit hit)
     {
-        if (hit.collider.tag != TurnManager.currentTeam)
+        if (hit.collider.tag != TurnManager.GetCurrentTeam())
         {
             return true;
         }

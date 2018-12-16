@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.XR.WSA.Persistence;
 
 public class TurnManager : MonoBehaviour
 {
@@ -10,8 +11,8 @@ public class TurnManager : MonoBehaviour
     static Queue<UnitMovement> turnOfTheTeam = new Queue<UnitMovement>();    //!!!TO DO: PRZEROBIC NA LISTE!!!
 
     private bool firstTurn = true;
-    public static string currentTeam;
-    public static string currentUnit;
+    private static string currentTeam = "NONE";
+    private static string currentUnit = "NONE";
 
     void Update()
     {
@@ -148,6 +149,16 @@ public class TurnManager : MonoBehaviour
             string team = teamTag.Dequeue();
             teamTag.Enqueue(team);
         }
+    }
+
+    public static string GetCurrentTeam()
+    {
+        return currentTeam;
+    }
+
+    public static string GetCurrentUnit()
+    {
+        return currentUnit;
     }
 
     void EndOfGame()
