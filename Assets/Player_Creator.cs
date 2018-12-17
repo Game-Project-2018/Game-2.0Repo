@@ -72,6 +72,7 @@ public class Player_Creator : MonoBehaviour {
     {
         G.SetActive(true);
         G.GetComponent<BaseStats>().HP = Data_static.Player_tab[i].HP;
+        G.GetComponent<BaseStats>().MaxHP = Data_static.Player_tab[i].maxHP;
     }
 
 

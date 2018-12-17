@@ -7,31 +7,12 @@ public class PlayerInventory : MonoBehaviour
 {
     public GameObject inventory;
     public GameObject characterSystem;
-    public GameObject craftSystem;
-    private Inventory craftSystemInventory;
     private CraftSystem cS;
     private Inventory mainInventory;
     private Inventory characterSystemInventory;
     private Tooltip toolTip;
 
     private InputManager inputManagerDatabase;
-
-    public GameObject HPMANACanvas;
-
-    Text hpText;
-    Text manaText;
-    Image hpImage;
-    Image manaImage;
-
-    float maxHealth = 100;
-    float maxMana = 100;
-    float maxDamage = 0;
-    float maxArmor = 0;
-
-    public float currentHealth = 60;
-    float currentMana = 100;
-    float currentDamage = 0;
-    float currentArmor = 0;
 
     int normalSize = 3;
 
@@ -157,24 +138,11 @@ public class PlayerInventory : MonoBehaviour
 
     void Start()
     {
-        //if (HPMANACanvas != null)
-        //{
-        //    hpText = HPMANACanvas.transform.GetChild(1).GetChild(0).GetComponent<Text>();
-
-        //    manaText = HPMANACanvas.transform.GetChild(2).GetChild(0).GetComponent<Text>();
-
-        //    hpImage = HPMANACanvas.transform.GetChild(1).GetComponent<Image>();
-        //    manaImage = HPMANACanvas.transform.GetChild(1).GetComponent<Image>();
-
-        //    UpdateHPBar();
-        //    UpdateManaBar();
-        //}
 
         if (inputManagerDatabase == null)
             inputManagerDatabase = (InputManager)Resources.Load("InputManager");
 
-        if (craftSystem != null)
-            cS = craftSystem.GetComponent<CraftSystem>();
+  
 
         if (GameObject.FindGameObjectWithTag("Tooltip") != null)
             toolTip = GameObject.FindGameObjectWithTag("Tooltip").GetComponent<Tooltip>();
@@ -182,24 +150,9 @@ public class PlayerInventory : MonoBehaviour
             mainInventory = inventory.GetComponent<Inventory>();
         if (characterSystem != null)
             characterSystemInventory = characterSystem.GetComponent<Inventory>();
-        if (craftSystem != null)
-            craftSystemInventory = craftSystem.GetComponent<Inventory>();
     }
 
-    //void UpdateHPBar()
-    //{
-    //    hpText.text = (currentHealth + "/" + maxHealth);
-    //    float fillAmount = currentHealth / maxHealth;
-    //    hpImage.fillAmount = fillAmount;
-    //}
-
-    //void UpdateManaBar()
-    //{
-    //    manaText.text = (currentMana + "/" + maxMana);
-    //    float fillAmount = currentMana / maxMana;
-    //    manaImage.fillAmount = fillAmount;
-    //}
-
+  
 
     public void OnConsumeItem(Item item)
     {
@@ -207,32 +160,13 @@ public class PlayerInventory : MonoBehaviour
         {
             if (item.itemAttributes[i].attributeName == "Health")
             {
-                if ((currentHealth + item.itemAttributes[i].attributeValue) > maxHealth)
-                    currentHealth = maxHealth;
-                else
-                    currentHealth += item.itemAttributes[i].attributeValue;
-            }
-            if (item.itemAttributes[i].attributeName == "Mana")
-            {
-                if ((currentMana + item.itemAttributes[i].attributeValue) > maxMana)
-                    currentMana = maxMana;
-                else
-                    currentMana += item.itemAttributes[i].attributeValue;
-            }
-            if (item.itemAttributes[i].attributeName == "Armor")
-            {
-                if ((currentArmor + item.itemAttributes[i].attributeValue) > maxArmor)
-                    currentArmor = maxArmor;
-                else
-                    currentArmor += item.itemAttributes[i].attributeValue;
-            }
-            if (item.itemAttributes[i].attributeName == "Damage")
-            {
-                if ((currentDamage + item.itemAttributes[i].attributeValue) > maxDamage)
-                    currentDamage = maxDamage;
-                else
-                    currentDamage += item.itemAttributes[i].attributeValue;
-            }
+                foreach (Player_stats Player in Data_static.Player_tab) {
+                    if ((Player.HP + item.itemAttributes[i].attributeValue) > Player.maxHP)
+                        Player.HP = Player.maxHP;
+                    else
+                        Player.HP += item.itemAttributes[i].attributeValue;
+                }
+            } 
         }
         //if (HPMANACanvas != null)
         //{
@@ -245,40 +179,20 @@ public class PlayerInventory : MonoBehaviour
     {
         for (int i = 0; i < item.itemAttributes.Count; i++)
         {
-            if (item.itemAttributes[i].attributeName == "Health")
-                maxHealth += item.itemAttributes[i].attributeValue;
-            if (item.itemAttributes[i].attributeName == "Mana")
-                maxMana += item.itemAttributes[i].attributeValue;
-            if (item.itemAttributes[i].attributeName == "Armor")
-                maxArmor += item.itemAttributes[i].attributeValue;
-            if (item.itemAttributes[i].attributeName == "Damage")
-                maxDamage += item.itemAttributes[i].attributeValue;
+            //if (item.itemAttributes[i].attributeName == "Damage")
+                //maxDamage += item.itemAttributes[i].attributeValue;
         }
-        //if (HPMANACanvas != null)
-        //{
-        //    UpdateManaBar();
-        //    UpdateHPBar();
-        //}
+
     }
 
     public void OnUnEquipItem(Item item)
     {
         for (int i = 0; i < item.itemAttributes.Count; i++)
-        {
-            if (item.itemAttributes[i].attributeName == "Health")
-                maxHealth -= item.itemAttributes[i].attributeValue;
-            if (item.itemAttributes[i].attributeName == "Mana")
-                maxMana -= item.itemAttributes[i].attributeValue;
-            if (item.itemAttributes[i].attributeName == "Armor")
-                maxArmor -= item.itemAttributes[i].attributeValue;
-            if (item.itemAttributes[i].attributeName == "Damage")
-                maxDamage -= item.itemAttributes[i].attributeValue;
+        { 
+           // if (item.itemAttributes[i].attributeName == "Damage")
+               // maxDamage -= item.itemAttributes[i].attributeValue;
         }
-        //if (HPMANACanvas != null)
-        //{
-        //    UpdateManaBar();
-        //    UpdateHPBar();
-        //}
+   
     }
 
 
@@ -314,19 +228,7 @@ public class PlayerInventory : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(inputManagerDatabase.CraftSystemKeyCode))
-        {
-            if (!craftSystem.activeSelf)
-                craftSystemInventory.openInventory();
-            else
-            {
-                if (cS != null)
-                    cS.backToInventory();
-                if (toolTip != null)
-                    toolTip.deactivateTooltip();
-                craftSystemInventory.closeInventory();
-            }
-        }
+        
 
     }
 

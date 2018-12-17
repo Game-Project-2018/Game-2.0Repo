@@ -37,8 +37,6 @@ public class FirstPersonController : MonoBehaviour
             PlayerInventory playerInv = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerInventory>();
             if (playerInv.inventory != null)
                 inventory = playerInv.inventory;
-            if (playerInv.craftSystem != null)
-                craftSystem = playerInv.craftSystem;
             if (playerInv.characterSystem != null)
                 characterSystem = playerInv.characterSystem;
         }

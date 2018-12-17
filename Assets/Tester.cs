@@ -5,7 +5,7 @@ using UnityEngine;
 public class Tester : MonoBehaviour {
 
 	void Start(){
-		Data_static.Test_number = 0;
+
 	}
 	void Update ()
 	{
