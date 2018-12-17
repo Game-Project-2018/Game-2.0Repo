@@ -8,8 +8,8 @@ public  class Buttons : MonoBehaviour {
 	public AcctivePlayer ActivePlayer1;
     GameObject Player;
 
-	void Start ()
-	{
+	void Start () {
+
 		Player = null;
 	}
 
