@@ -8,14 +8,12 @@ public class PlayerTurn : UnitMovement
 
     public AcctivePlayer APlay;
 
-    void Start()
-    {
+    void Start() {
+
         Initialization();
     }
 
-    void Update()
-    {
-
+    void Update() {
 
         if (UnitLive(this))
         {
@@ -27,11 +25,9 @@ public class PlayerTurn : UnitMovement
             return;
         }
 
-   
-
         APlay.Player = gameObject;
+
         RingCurentUnitTurn.GetUnitPosition(this);
-        RingCurentUnitTurn.SetActiveRing();
 
         if (!alredyMoved)
         {
@@ -45,20 +41,15 @@ public class PlayerTurn : UnitMovement
             }
         }
 
-        if ((!alredyAttack || !alredyMoved) && !moving)
+        if (!alredyMoved || !alredyAttack)
         {
             CheckMouse();
         }
 
-        if (alredyMoved && alredyAttack)
-        {
-            RingCurentUnitTurn.SetDeactiveRing();
-            TurnManager.EndUnitTurn();
-        }
     }
 
-    public void ButtonPreviousUnit()
-    {
+    public void ButtonPreviousUnit() {
+
         if (!alredyAttack && !alredyMoved)
         {
             RingCurentUnitTurn.SetDeactiveRing();
@@ -67,8 +58,8 @@ public class PlayerTurn : UnitMovement
         }      
     }
 
-    public void ButtonNextUnit()
-    {
+    public void ButtonNextUnit() {
+
         if (!alredyAttack && !alredyMoved)
         {
             RingCurentUnitTurn.SetDeactiveRing();
@@ -77,8 +68,8 @@ public class PlayerTurn : UnitMovement
         }   
     }
 
-    public void ButtonEndUnitTurn()
-    {
+    public void ButtonEndUnitTurn() {
+
         alredyMoved = false;
         alredyAttack = false;
         RemoveSelectableTiles();
@@ -86,8 +77,8 @@ public class PlayerTurn : UnitMovement
         TurnManager.EndUnitTurn();
     }
 
-    public void ButtonEndTeamTurn()
-    {
+    public void ButtonEndTeamTurn() {
+
         alredyMoved = false;
         alredyAttack = false;
         RemoveSelectableTiles();

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -308,9 +309,9 @@ public class UnitMovement : MonoBehaviour
         return false;
     }
 
-    protected void CheckMouse()
-    {
-        if (Input.GetMouseButtonUp(1))
+    protected void CheckMouse() {
+
+        if (Input.GetMouseButtonDown(1))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -319,67 +320,81 @@ public class UnitMovement : MonoBehaviour
             {
                 if (hit.collider.tag == "Tile")
                 {
-                    Tile t = hit.collider.GetComponent<Tile>();
-
-                    if (t.selectable)
-                    {
-                        if (currentSelectedObj == SelectedObj.tile && t.GetComponent<Renderer>().material.color == Color.blue)
-                        {
-                            t.GetComponent<Renderer>().material.color = Color.green;
-                            currentSelectedObj = SelectedObj.none;
-                            MoveToTile(t);
-                        }
-                        currentSelectedObj = SelectedObj.tile;
-
-                        if (t.GetComponent<Renderer>().material.color != Color.blue && t.GetComponent<Renderer>().material.color != Color.green)
-                        {
-                            foreach (Tile tile in selectableTiles)
-                            {
-                                if (tile.GetComponent<Renderer>().material.color == Color.blue)
-                                {
-                                    tile.GetComponent<Renderer>().material.color = Color.red;
-                                }
-                            }
-                            t.GetComponent<Renderer>().material.color = Color.blue;
-                        }
-                    }
+                    RunIfMoveAction(hit);
                 }
                 else if (EnemyTag(hit) && !alredyAttack)
                 {
-                    RingSelectedEnemy.SetActiveRing();
-                    if (currentSelectedObj == SelectedObj.enemy && InTheSamePosition(hit))
-                    {
-                        currentSelectedObj = SelectedObj.none;
-                        RingSelectedEnemy.SetDeactiveRing();
-                        AttackEnemy(hit);
-                    }
-                    currentSelectedObj = SelectedObj.enemy;
-                    
-                    if (hit.collider.gameObject.transform.position != RingSelectedEnemy.GetRingPosition())
-                    {
-                        RingSelectedEnemy.GetEnemyPosition(hit.collider.GetComponent<UnitMovement>());
-                    }
+                    RunIfAttackAction(hit);
                 }
             }
         }
     }
 
-    private bool InTheSamePosition(RaycastHit hit)
-    {
-        if (hit.collider.gameObject.transform.position.x == RingSelectedEnemy.GetRingPosition().x &&
-            hit.collider.gameObject.transform.position.z == RingSelectedEnemy.GetRingPosition().z)
-            return true;
+    private void RunIfAttackAction(RaycastHit hit) {
 
-            return false;
+        RingSelectedEnemy.SetActiveRing();
+        if (currentSelectedObj == SelectedObj.enemy && RingInTheSamePosition(hit))
+        {
+            currentSelectedObj = SelectedObj.none;
+            RingSelectedEnemy.SetDeactiveRing();
+            AttackEnemy(hit);
+        }
+        currentSelectedObj = SelectedObj.enemy;
+
+        if (hit.collider.gameObject.transform.position != RingSelectedEnemy.GetRingPosition())
+        {
+            RingSelectedEnemy.GetEnemyPosition(hit.collider.GetComponent<UnitMovement>());
+        }
+    }
+
+    private void RunIfMoveAction(RaycastHit hit) {
+
+        Tile t = hit.collider.GetComponent<Tile>();
+
+        if (t.selectable)
+        {
+            if (currentSelectedObj == SelectedObj.tile && t.GetComponent<Renderer>().material.color == Color.blue)
+            {
+                t.GetComponent<Renderer>().material.color = Color.green;
+                currentSelectedObj = SelectedObj.none;
+                MoveToTile(t);
+            }
+            currentSelectedObj = SelectedObj.tile;
+
+            if (t.GetComponent<Renderer>().material.color != Color.blue && t.GetComponent<Renderer>().material.color != Color.green)
+            {
+                foreach (Tile tile in selectableTiles)
+                {
+                    if (tile.GetComponent<Renderer>().material.color == Color.blue)
+                    {
+                        tile.GetComponent<Renderer>().material.color = Color.red;
+                    }
+                }
+                t.GetComponent<Renderer>().material.color = Color.blue;
+            }
+        }
+    }
+
+    private bool RingInTheSamePosition(RaycastHit hit)
+    {
+        if (hit.collider.gameObject.transform.position.x == RingSelectedEnemy.GetRingPosition().x)
+            if (hit.collider.gameObject.transform.position.z == RingSelectedEnemy.GetRingPosition().z)
+                if (RingSelectedEnemy.GetRingPosition().y > 0)
+                    return true;
+
+        return false;
     }
 
     private bool EnemyTag(RaycastHit hit)
     {
-        if (hit.collider.tag != TurnManager.GetCurrentTeam())
+        foreach (String tag in TurnManager.GetTeamsTagsList())
         {
-            return true;
+            if (tag != TurnManager.GetCurrentTeam())
+            {
+                if (hit.collider.tag == tag)
+                    return true;
+            }
         }
-
         return false;
     }
 
@@ -398,7 +413,8 @@ public class UnitMovement : MonoBehaviour
         if (hit.collider.GetComponent<BaseStats>().HP <= 0)
         {
             RingSelectedEnemy.SetDeactiveRing();
-            TurnManager.RemoveUnit(this);
+            UnitMovement unit = hit.collider.GetComponent<UnitMovement>();
+            TurnManager.RemoveUnit(unit);
         }
 
     }

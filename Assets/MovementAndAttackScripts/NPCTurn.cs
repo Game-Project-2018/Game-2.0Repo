@@ -92,7 +92,8 @@ public class NPCTurn : UnitMovement
 
         if (target.GetComponent<Collider>().GetComponent<BaseStats>().HP <= 0)
         {
-            TurnManager.RemoveUnit(this);
+            UnitMovement unit = target.GetComponent<UnitMovement>();
+            TurnManager.RemoveUnit(unit);
         }
     }
 }

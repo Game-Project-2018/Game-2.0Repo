@@ -2,20 +2,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.XR.WSA.Persistence;
 
 public class TurnManager : MonoBehaviour
 {
     static Dictionary<string, List<UnitMovement>> teams = new Dictionary<string, List<UnitMovement>>();
     static Queue<string> teamTag = new Queue<string>();
-    static Queue<UnitMovement> turnOfTheTeam = new Queue<UnitMovement>();    //!!!TO DO: PRZEROBIC NA LISTE!!!
+    static Queue<UnitMovement> turnOfTheTeam = new Queue<UnitMovement>();
+
+    static Queue<UnitMovement> unitsInGameQueue = new Queue<UnitMovement>();
+    static List<Tile> tileMap = new List<Tile>();
 
     private bool firstTurn = true;
     private static string currentTeam = "NONE";
     private static string currentUnit = "NONE";
 
-    void Update()
-    {
+    void Update() {
+
         if (turnOfTheTeam.Count == 0) //Jezeli kolejka pusta uruchom Inicjalizacje
         {
             if (firstTurn)
@@ -23,6 +25,8 @@ public class TurnManager : MonoBehaviour
                 FirstTurnPlayer();
                 firstTurn = false;
             }
+
+            CopyUnitsToTeamsQueue();
             InitializationTeamTurnQueue();
         }
     }
@@ -46,6 +50,7 @@ public class TurnManager : MonoBehaviour
         if (turnOfTheTeam.Count > 0)
         {
             currentUnit = turnOfTheTeam.Peek().name;
+            ClearMap();
             turnOfTheTeam.Peek().BeginUnitTurn();
         }
     }
@@ -94,32 +99,39 @@ public class TurnManager : MonoBehaviour
         list.Add(unitMovement);
     }
 
-    public static void RemoveUnit(UnitMovement unit)
-    {
-        List<UnitMovement> newTeamList = new List<UnitMovement>();
-        UnitMovement tempUnit = new UnitMovement();
-        foreach (String tag in teamTag)
+    public static void RemoveUnit(UnitMovement unitToRemove) {
+
+        List<UnitMovement> teamList = teams[unitToRemove.tag];
+        List<UnitMovement> teamWithoutRemovedUnit = new List<UnitMovement>();
+
+        foreach (UnitMovement unitMovement in teamList)
         {
-            foreach (UnitMovement unitMovement in teams[tag])
+            if (unitMovement != unitToRemove)
             {
-                if (unitMovement.GetComponent<BaseStats>().HP <= 0)
-                {
-                    tempUnit = unitMovement;
-                }
+                teamWithoutRemovedUnit.Add(unitMovement);
             }
         }
+        teams[unitToRemove.tag] = teamWithoutRemovedUnit;
+        Destroy(unitToRemove.gameObject);
+        unitToRemove.gameObject.SetActive(false);
 
-        foreach (UnitMovement unitMovement in teams[tempUnit.tag])
+    }
+
+    private void CopyUnitsToTeamsQueue() {
+
+        for (int i = 0; i < teams.Count; i++)
         {
-            if (unitMovement.GetComponent<BaseStats>().HP > 0)
-            {
-                newTeamList.Add(unitMovement);
-            }
-        }
+            List<UnitMovement> teamList = teams[teamTag.Peek()];
 
-        teams[tempUnit.tag].Clear();
-        teams[tempUnit.tag] = newTeamList;
-        Destroy(tempUnit.gameObject);
+            foreach (UnitMovement unit in teamList)
+            {
+                unitsInGameQueue.Enqueue(unit);
+            }
+
+            string team = teamTag.Dequeue();
+            teamTag.Enqueue(team);
+        }
+        //Debug.Log(unitsInGameQueue.Count + " - liczba obiektow w unitsInGameQueue");
     }
 
     public static void PreviousUnit()
@@ -142,13 +154,39 @@ public class TurnManager : MonoBehaviour
         StartUnitTurn();
     }
 
-    void FirstTurnPlayer()
+    private void FirstTurnPlayer()
     {
         if ((teamTag.Peek() != "Player"))
         {
             string team = teamTag.Dequeue();
             teamTag.Enqueue(team);
         }
+    }
+
+    public static void AddTile(Tile tile)
+    {
+        tileMap.Add(tile);
+    }
+
+    private static void ClearMap() {
+
+        foreach (Tile tile in tileMap)
+        {
+            tile.GetComponent<Renderer>().material.color = Color.white;
+        }  
+    }
+
+    public static List<String> GetTeamsTagsList()
+    {
+        List<String> teamsTagsList = new List<string>();
+        for (int i = 0; i < teamTag.Count; i++)
+        {
+            string tmp = teamTag.Dequeue();
+            teamsTagsList.Add(tmp);
+            teamTag.Enqueue(tmp);
+        }
+
+        return teamsTagsList;
     }
 
     public static string GetCurrentTeam()

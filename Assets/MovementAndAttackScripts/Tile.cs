@@ -21,6 +21,10 @@ public class Tile : MonoBehaviour
     public float g = 0;
     public float h = 0;
 
+    void Start() {
+        TurnManager.AddTile(this);
+    }
+
     public void Reset()
     {
         adjacencyList.Clear();
