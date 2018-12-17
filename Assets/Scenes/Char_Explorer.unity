@@ -180,7 +180,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Murderer
+  m_Text: Mother
 --- !u!222 &35003316
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -384,7 +384,7 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1 &337910015
 GameObject:
   m_ObjectHideFlags: 0
@@ -415,16 +415,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 716d2f2eda7c33540a9162783eec7f47, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  drunk: 1
-  doctor: 1
-  Survivalist: 1
-  Soldier: 1
-  Murderer: 1
+  drunk: 0
+  doctor: 0
+  Survivalist: 0
+  Soldier: 0
+  Murderer: 0
   drunkG: {fileID: 1188537392}
   doctorG: {fileID: 190061706}
   SurvivalistG: {fileID: 522316886}
   SoldierG: {fileID: 1701762251}
   MurdererG: {fileID: 0}
+  MotherG: {fileID: 741353392}
 --- !u!114 &337910017
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -864,6 +865,11 @@ CanvasRenderer:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 732662963}
   m_CullTransparentMesh: 0
+--- !u!1 &741353392 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 100002, guid: 5a4dc36379bcf8048abe7dd4c6921c04,
+    type: 3}
+  m_PrefabInternal: {fileID: 810142636}
 --- !u!1 &742511697
 GameObject:
   m_ObjectHideFlags: 0
@@ -874,7 +880,7 @@ GameObject:
   - component: {fileID: 742511698}
   - component: {fileID: 742511699}
   m_Layer: 5
-  m_Name: murderer
+  m_Name: mother
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -943,7 +949,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 337910016}
-        m_MethodName: Murderer_toggle
+        m_MethodName: mother_toggle
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -955,7 +961,7 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1 &805198479
 GameObject:
   m_ObjectHideFlags: 0
@@ -1047,7 +1053,7 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1001 &810142636
 Prefab:
   m_ObjectHideFlags: 0
@@ -1235,7 +1241,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 337910016}
-        m_MethodName: Soldier_toggle
+        m_MethodName: Survivalist_toggle
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1247,7 +1253,7 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1 &1075767252
 GameObject:
   m_ObjectHideFlags: 0
@@ -2041,7 +2047,7 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!1 &1700729358
 GameObject:
   m_ObjectHideFlags: 0
