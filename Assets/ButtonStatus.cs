@@ -16,6 +16,5 @@ public class ButtonStatus : MonoBehaviour
 	        else if( button.gameObject.activeSelf != true )
 	            button.gameObject.SetActive(true);
 	    }
-
     }
 }

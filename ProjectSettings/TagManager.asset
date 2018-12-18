@@ -19,6 +19,7 @@ TagManager:
   - Forest
   - PlayerButtons
   - City
+  - Icon
   layers:
   - Default
   - TransparentFX

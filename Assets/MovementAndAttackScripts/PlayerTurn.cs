@@ -29,6 +29,12 @@ public class PlayerTurn : UnitMovement
 
         RingCurentUnitTurn.GetUnitPosition(this);
 
+        if (RingCurentUnitTurn.ringStatus != true)
+        {
+            RingCurentUnitTurn.SetActiveRing();
+            RingCurentUnitTurn.ringStatus = true;
+        }
+
         if (!alredyMoved)
         {
             if (!moving)
@@ -46,26 +52,6 @@ public class PlayerTurn : UnitMovement
             CheckMouse();
         }
 
-    }
-
-    public void ButtonPreviousUnit() {
-
-        if (!alredyAttack && !alredyMoved)
-        {
-            RingCurentUnitTurn.SetDeactiveRing();
-            TurnManager.PreviousUnit();
-            RemoveSelectableTiles();
-        }      
-    }
-
-    public void ButtonNextUnit() {
-
-        if (!alredyAttack && !alredyMoved)
-        {
-            RingCurentUnitTurn.SetDeactiveRing();
-            TurnManager.NextUnit();
-            RemoveSelectableTiles();
-        }   
     }
 
     public void ButtonEndUnitTurn() {

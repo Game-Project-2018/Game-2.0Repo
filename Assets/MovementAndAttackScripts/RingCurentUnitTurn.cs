@@ -10,6 +10,7 @@ public class RingCurentUnitTurn : MonoBehaviour
     private static string unitTag;
     private static Vector3 ringPosition;
     public static float ringStartHeight = 0.6f;
+    public static bool ringStatus = false;
 
     void Start()
 	{
@@ -31,6 +32,7 @@ public class RingCurentUnitTurn : MonoBehaviour
 
     public static void SetDeactiveRing()
     {
+        ringStatus = false;
         ringPosition.y = -100;
     }
 

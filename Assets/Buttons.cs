@@ -13,18 +13,6 @@ public  class Buttons : MonoBehaviour {
 		Player = null;
 	}
 
-    public void PreviousUnit()
-    {
-        Player = ActivePlayer1.Player;
-        Player.GetComponent<PlayerTurn>().ButtonPreviousUnit();
-    }
-
-    public void NextUnit()
-    {
-        Player = ActivePlayer1.Player;
-        Player.GetComponent<PlayerTurn>().ButtonNextUnit();
-    }
-
     public void EndUnitTurn()
     {
         Player = ActivePlayer1.Player;

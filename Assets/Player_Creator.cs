@@ -7,7 +7,7 @@ public class Player_Creator : MonoBehaviour {
 
 
 
-	static int i=0;
+	//static int i=0;
     public GameObject Survivalist;
     public GameObject Drunk;
     public GameObject Doctor;
