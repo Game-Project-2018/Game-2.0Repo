@@ -55,13 +55,13 @@ public class PlayerTurn : UnitMovement
         {
             CheckMouse();
         }
-
     }
 
     public void ButtonEndUnitTurn() {
 
         alredyMoved = false;
         alredyAttack = false;
+        selectableTilesFinded = false;
         RemoveSelectableTiles();
         RingCurentUnitTurn.SetDeactiveRing();
         TurnManager.EndUnitTurn();
@@ -71,6 +71,7 @@ public class PlayerTurn : UnitMovement
 
         alredyMoved = false;
         alredyAttack = false;
+        selectableTilesFinded = false;
         RemoveSelectableTiles();
         RingCurentUnitTurn.SetDeactiveRing();
         TurnManager.EndTeamTurn();
