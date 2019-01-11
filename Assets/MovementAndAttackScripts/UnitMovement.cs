@@ -26,6 +26,8 @@ public class UnitMovement : MonoBehaviour
     protected bool alredyAttack = false;
     protected bool alredyMoved = false;
 
+    protected bool selectableTilesFinded = false;
+
     [HideInInspector]
     public Tile actualTargetTile;
 
@@ -96,9 +98,11 @@ public class UnitMovement : MonoBehaviour
                 t.selectable = true;
                 if (tag == "Player")
                 {
-                    if(t.GetComponent<Renderer>().material.color != Color.blue)
-                        t.GetComponent<Renderer>().material.color = Color.red;
-                    currentTile.GetComponent<Renderer>().material.color = Color.white;
+                    if (t.GetComponent<Renderer>().material.color != Color.blue)
+                        if (t.GetComponent<Renderer>().material.color != Color.red)
+                            t.GetComponent<Renderer>().material.color = Color.red;
+                    if (currentTile.GetComponent<Renderer>().material.color != Color.white)
+                        currentTile.GetComponent<Renderer>().material.color = Color.white;
                 }
 
                 if (t.distance < moveRange)

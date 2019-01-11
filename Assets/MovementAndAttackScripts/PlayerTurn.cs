@@ -39,7 +39,11 @@ public class PlayerTurn : UnitMovement
         {
             if (!moving)
             {
-                FindSelectableTiles();
+                if (!selectableTilesFinded)
+                {
+                    FindSelectableTiles();
+                    selectableTilesFinded = true;
+                }
             }
             else
             {
