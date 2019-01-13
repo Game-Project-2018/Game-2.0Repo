@@ -31,7 +31,10 @@ public class TurnManager : MonoBehaviour {
                 CopyUnitsToTeamsQueue();
             }
 
-            InitializationTeamTurnQueue();
+            if (teams["Player"].Count != 0)
+                InitializationTeamTurnQueue();
+            else
+                EndOfGame();
         }
     }
 
@@ -61,10 +64,8 @@ public class TurnManager : MonoBehaviour {
 
     public static void EndTeamTurn()
     {
-
         UnitsInGameListEndTeamTurn();
         QueueOfUnits.QueueHasChanged = true;
-
         if (turnOfTheTeam.Count > 0)
             turnOfTheTeam.Clear();
         string team = teamTag.Dequeue();
@@ -111,24 +112,6 @@ public class TurnManager : MonoBehaviour {
         list.Add(unitMovement);
     }
 
-    public static void RemoveUnit(UnitMovement unitToRemove) {
-
-        List<UnitMovement> teamList = teams[unitToRemove.tag];
-        List<UnitMovement> teamWithoutRemovedUnit = new List<UnitMovement>();
-
-        foreach (UnitMovement unitMovement in teamList)
-        {
-            if (unitMovement != unitToRemove)
-            {
-                teamWithoutRemovedUnit.Add(unitMovement);
-            }
-        }
-        teams[unitToRemove.tag] = teamWithoutRemovedUnit;
-        Destroy(unitToRemove.gameObject);
-        UnitsInGameListRemoveUnit(unitToRemove);
-        unitToRemove.gameObject.SetActive(false);
-    }
-
     private void CopyUnitsToTeamsQueue() {
 
         for (int i = 0; i < teams.Count; i++)
@@ -144,6 +127,41 @@ public class TurnManager : MonoBehaviour {
             teamTag.Enqueue(team);
         }
         QueueOfUnits.QueueHasChanged = true;
+    }
+
+    public static void RemoveUnitsFromScene()
+    {
+        GameObject[] goList = GameObject.FindGameObjectsWithTag("Player");
+
+        foreach (GameObject go in goList)
+        {
+            if (go.GetComponent<BaseStats>().HP <= 0)
+            {
+                Destroy(go);
+                go.SetActive(false);
+            }
+
+        }
+    }
+
+    public static void RemoveUnit(UnitMovement unitToRemove)
+    {
+        List<UnitMovement> teamList;
+        List<UnitMovement> teamWithoutRemovedUnit;
+
+        teamList = teams[unitToRemove.tag];
+        teamWithoutRemovedUnit = new List<UnitMovement>();
+
+        foreach (UnitMovement unit in teamList)
+        {
+            if (unit != unitToRemove)
+            {
+                teamWithoutRemovedUnit.Add(unit);
+            }
+        }
+
+        teams[unitToRemove.tag] = teamWithoutRemovedUnit;
+        UnitsInGameListRemoveUnit(unitToRemove);
     }
 
     private static void UnitsInGameListEndUnitTurn() {
@@ -182,26 +200,6 @@ public class TurnManager : MonoBehaviour {
         unitsInGameList = temp;
 
         QueueOfUnits.QueueHasChanged = true;
-    }
-
-    public static void PreviousUnit()
-    {
-        UnitMovement unit;
-        for (int i = 0; i < turnOfTheTeam.Count - 1; i++)
-        {
-            unit = turnOfTheTeam.Dequeue();
-            unit.EndUnitTurn();
-            turnOfTheTeam.Enqueue(unit);
-        }
-        StartUnitTurn();
-    }
-
-    public static void NextUnit()
-    {
-        UnitMovement unit = turnOfTheTeam.Dequeue();
-        unit.EndUnitTurn();
-        turnOfTheTeam.Enqueue(unit);
-        StartUnitTurn();
     }
 
     private void FirstTurnPlayer()
@@ -256,7 +254,7 @@ public class TurnManager : MonoBehaviour {
 
     void EndOfGame()
     {
-
+        
     }
 
     void GoToWorldMap()

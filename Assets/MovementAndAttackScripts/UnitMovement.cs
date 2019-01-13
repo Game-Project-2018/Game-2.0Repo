@@ -27,6 +27,7 @@ public class UnitMovement : MonoBehaviour
     protected bool alredyMoved = false;
 
     protected bool selectableTilesFinded = false;
+    protected AnimatorController AnimController;
 
     [HideInInspector]
     public Tile actualTargetTile;
@@ -36,7 +37,7 @@ public class UnitMovement : MonoBehaviour
         halfHeight = GetComponent<Collider>().bounds.extents.y; //Przypisanie wysokosci jednostki nad ziemia do zmiennej 
 
         CenterPosition();
-
+        AnimController = GetComponentInChildren<AnimatorController>();
         TurnManager.AddUnit(this); //Dodanie jednostki
     }
 
@@ -152,7 +153,10 @@ public class UnitMovement : MonoBehaviour
                 SetHorizotalVelocity();
 
                 //Poruszanie
-                transform.forward = heading;
+                if(tag == "Player")
+                    transform.forward = heading;
+                else
+                    transform.forward = heading * -1;
                 transform.position += velocity * Time.deltaTime;
             }
             else
@@ -166,9 +170,19 @@ public class UnitMovement : MonoBehaviour
         {
             RemoveSelectableTiles();
             moving = false;
-
+            setHeadingToTarget();
             alredyMoved = true;
         }
+    }
+
+    protected void setHeadingToTarget()
+    {
+        Vector3 target = FindNearestTarget().transform.position;
+        CalculateHeading(target);
+        if (tag == "Player")
+            transform.forward = heading;
+        else
+            transform.forward = heading * -1;
     }
 
     protected void RemoveSelectableTiles() //Czysci tablice plytek po ktorych moze poruszac sie jednostka
@@ -197,6 +211,35 @@ public class UnitMovement : MonoBehaviour
     void SetHorizotalVelocity() //Ustawia wektor predkosc poruszania jednostki
     {
         velocity = heading * moveSpeed;
+    }
+
+    protected GameObject FindNearestTarget()
+    {
+        GameObject[] targets = null;
+
+        if (tag == "Player")
+            targets = GameObject.FindGameObjectsWithTag("NPC");
+        if (tag == "NPC")
+            targets = GameObject.FindGameObjectsWithTag("Player");
+
+        GameObject nearest = null;
+        float distance = Mathf.Infinity;
+
+        foreach (GameObject obj in targets)
+        {
+            if (obj.GetComponent<BaseStats>().HP > 0)
+            {
+                float d = Vector3.Distance(transform.position, obj.transform.position);
+
+                if (d < distance)
+                {
+                    distance = d;
+                    nearest = obj;
+                }
+            }
+        }
+
+        return nearest;
     }
 
     protected Tile FindLowestF(List<Tile> list) //Tworzy liste plytek o najmniejszym koszcie F 
@@ -302,15 +345,15 @@ public class UnitMovement : MonoBehaviour
         Debug.Log("Path not found");
     }
 
-    protected bool UnitLive(UnitMovement unit)
+    protected void UnitIsAlive(UnitMovement unit)
     {
+        Debug.Log(unit.GetComponent<BaseStats>().HP <= 0);
         if (unit.GetComponent<BaseStats>().HP <= 0)
         {
+            unit.AnimController.isDying = true;
+            Debug.Log("AddedToRemove");
             TurnManager.RemoveUnit(unit);
-            return true;
         }
-
-        return false;
     }
 
     protected void CheckMouse() {
@@ -336,18 +379,21 @@ public class UnitMovement : MonoBehaviour
 
     private void RunIfAttackAction(RaycastHit hit) {
 
-        RingSelectedEnemy.SetActiveRing();
-        if (currentSelectedObj == SelectedObj.enemy && RingInTheSamePosition(hit))
+        if (hit.collider.GetComponent<BaseStats>().HP > 0)
         {
-            currentSelectedObj = SelectedObj.none;
-            RingSelectedEnemy.SetDeactiveRing();
-            AttackEnemy(hit);
-        }
-        currentSelectedObj = SelectedObj.enemy;
+            RingSelectedEnemy.SetActiveRing();
+            if (currentSelectedObj == SelectedObj.enemy && RingInTheSamePosition(hit))
+            {
+                currentSelectedObj = SelectedObj.none;
+                RingSelectedEnemy.SetDeactiveRing();
+                AttackEnemy(hit);
+            }
+            currentSelectedObj = SelectedObj.enemy;
 
-        if (hit.collider.gameObject.transform.position != RingSelectedEnemy.GetRingPosition())
-        {
-            RingSelectedEnemy.GetEnemyPosition(hit.collider.GetComponent<UnitMovement>());
+            if (hit.collider.gameObject.transform.position != RingSelectedEnemy.GetRingPosition())
+            {
+                RingSelectedEnemy.GetEnemyPosition(hit.collider.GetComponent<UnitMovement>());
+            }
         }
     }
 
@@ -417,10 +463,14 @@ public class UnitMovement : MonoBehaviour
         if (hit.collider.GetComponent<BaseStats>().HP <= 0)
         {
             RingSelectedEnemy.SetDeactiveRing();
-            UnitMovement unit = hit.collider.GetComponent<UnitMovement>();
-            TurnManager.RemoveUnit(unit);
         }
 
+        UnitMovement unit = hit.collider.GetComponent<UnitMovement>();
+        if (unit.GetComponent<BaseStats>().HP <= 0)
+        {
+            unit.GetComponent<AnimatorController>().isDying = true;
+            UnitIsAlive(unit);
+        }
     }
 
     public void BeginUnitTurn() //Rozpoczyna ture

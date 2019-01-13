@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class PlayerTurn : UnitMovement
 {
-
     public AcctivePlayer APlay;
 
     void Start() {
@@ -14,11 +13,6 @@ public class PlayerTurn : UnitMovement
     }
 
     void Update() {
-
-        if (UnitLive(this))
-        {
-            TurnManager.EndUnitTurn();
-        }
 
         if (!unitTurn)
         {
@@ -47,6 +41,7 @@ public class PlayerTurn : UnitMovement
             }
             else
             {
+                AnimController.isMoving = true;
                 Move();
             }
         }
@@ -55,6 +50,9 @@ public class PlayerTurn : UnitMovement
         {
             CheckMouse();
         }
+
+        if (alredyMoved)
+            AnimController.isMoving = false;
     }
 
     public void ButtonEndUnitTurn() {

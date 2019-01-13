@@ -15,31 +15,33 @@ public class NPCTurn : UnitMovement
     // Update is called once per frame
     void Update()
     {
+
         if (!unitTurn)
         {
             return;
         }
 
-        if (UnitLive(this))
-        {
-            TurnManager.EndUnitTurn();
-        }
-
         if (!moving)
         {
-            FindNearestTarget();
-            Atack();
-            CalculatePath();
-            FindSelectableTiles();
-            actualTargetTile.target = true;
+            target = FindNearestTarget();
+            if (target != null)
+            {
+                Atack();
+                CalculatePath();
+                FindSelectableTiles();
+                actualTargetTile.target = true;
+            }
         }
-        else
+        else if(target != null)
         {
             Move();
+
             if (alredyMoved)
             {
                 if (!alredyAttack)
+                {
                     Atack();
+                }
                 alredyAttack = false;
                 alredyMoved = false;
                 TurnManager.EndUnitTurn();
@@ -47,31 +49,10 @@ public class NPCTurn : UnitMovement
         }
     }
 
-    void CalculatePath()
-    {
+    void CalculatePath() {
+
         Tile targetTile = GetTargetTile(target);
         FindPath(targetTile);
-    }
-
-    void FindNearestTarget()
-    {
-        GameObject[] targets = GameObject.FindGameObjectsWithTag("Player");
-
-        GameObject nearest = null;
-        float distance = Mathf.Infinity;
-
-        foreach (GameObject obj in targets)
-        {
-            float d = Vector3.Distance(transform.position, obj.transform.position);
-
-            if (d < distance)
-            {
-                distance = d;
-                nearest = obj;
-            }
-        }
-
-        target = nearest;
     }
 
     void Atack()
@@ -90,10 +71,9 @@ public class NPCTurn : UnitMovement
             alredyAttack = true;
         }
 
-        if (target.GetComponent<Collider>().GetComponent<BaseStats>().HP <= 0)
-        {
-            UnitMovement unit = target.GetComponent<UnitMovement>();
-            TurnManager.RemoveUnit(unit);
-        }
+        UnitMovement unit = target.GetComponent<UnitMovement>();
+
+        if (unit.GetComponent<BaseStats>().HP <= 0)
+            UnitIsAlive(unit);
     }
 }
