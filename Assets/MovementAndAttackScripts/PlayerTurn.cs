@@ -41,7 +41,7 @@ public class PlayerTurn : UnitMovement
             }
             else
             {
-                AnimController.isMoving = true;
+                CharacterAnimController.isMoving = true;
                 Move();
             }
         }
@@ -52,7 +52,7 @@ public class PlayerTurn : UnitMovement
         }
 
         if (alredyMoved)
-            AnimController.isMoving = false;
+            CharacterAnimController.isMoving = false;
     }
 
     public void ButtonEndUnitTurn() {
@@ -72,6 +72,7 @@ public class PlayerTurn : UnitMovement
         selectableTilesFinded = false;
         RemoveSelectableTiles();
         RingCurentUnitTurn.SetDeactiveRing();
-        TurnManager.EndTeamTurn();
+        TurnManager.ForceEndTeamTurn();
+        TurnManager.EndUnitTurn();
     }
 }

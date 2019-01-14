@@ -15,6 +15,7 @@ public class TurnManager : MonoBehaviour {
     private bool firstTurn = true;
     private static string currentTeam = "NONE";
     private static string currentUnit = "NONE";
+    public static bool forceEndTeamTurn = false;
 
     void Update() {
 
@@ -64,6 +65,9 @@ public class TurnManager : MonoBehaviour {
 
     public static void EndTeamTurn()
     {
+        if (forceEndTeamTurn)
+            forceEndTeamTurn = false;
+
         UnitsInGameListEndTeamTurn();
         QueueOfUnits.QueueHasChanged = true;
         if (turnOfTheTeam.Count > 0)
@@ -77,6 +81,9 @@ public class TurnManager : MonoBehaviour {
     {
         UnitMovement unit = turnOfTheTeam.Dequeue();
         unit.EndUnitTurn();
+
+        if(forceEndTeamTurn)
+            EndTeamTurn();
 
         UnitsInGameListEndUnitTurn();
         QueueOfUnits.QueueHasChanged = true;
@@ -132,6 +139,18 @@ public class TurnManager : MonoBehaviour {
     public static void RemoveUnitsFromScene()
     {
         GameObject[] goList = GameObject.FindGameObjectsWithTag("Player");
+
+        foreach (GameObject go in goList)
+        {
+            if (go.GetComponent<BaseStats>().HP <= 0)
+            {
+                Destroy(go);
+                go.SetActive(false);
+            }
+
+        }
+
+        goList = GameObject.FindGameObjectsWithTag("NPC");
 
         foreach (GameObject go in goList)
         {
@@ -250,6 +269,10 @@ public class TurnManager : MonoBehaviour {
     public static string GetCurrentUnit()
     {
         return currentUnit;
+    }
+
+    public static void ForceEndTeamTurn() {
+        forceEndTeamTurn = true;
     }
 
     void EndOfGame()

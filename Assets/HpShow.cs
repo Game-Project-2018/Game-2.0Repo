@@ -55,7 +55,10 @@ public class HpShow : MonoBehaviour {
 
     void SetValues() {
 
-        HPSliderPlayer.maxValue = ActivePlayer.GetComponent<AcctivePlayer>().Player.GetComponent<BaseStats>().MaxHP;
-        HPSliderPlayer.value = ActivePlayer.GetComponent<AcctivePlayer>().Player.GetComponent<BaseStats>().HP;
+        if (ActivePlayer != null)
+        {
+            HPSliderPlayer.maxValue = ActivePlayer.GetComponent<AcctivePlayer>().Player.GetComponent<BaseStats>().MaxHP;
+            HPSliderPlayer.value = ActivePlayer.GetComponent<AcctivePlayer>().Player.GetComponent<BaseStats>().HP;
+        }
     }
 }

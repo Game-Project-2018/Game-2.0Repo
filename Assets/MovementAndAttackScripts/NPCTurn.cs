@@ -15,7 +15,6 @@ public class NPCTurn : UnitMovement
     // Update is called once per frame
     void Update()
     {
-
         if (!unitTurn)
         {
             return;
@@ -34,10 +33,11 @@ public class NPCTurn : UnitMovement
         }
         else if(target != null)
         {
+            ZombieAnimaController.isMoving = true;
             Move();
-
             if (alredyMoved)
             {
+                ZombieAnimaController.isMoving = false;
                 if (!alredyAttack)
                 {
                     Atack();
@@ -46,7 +46,7 @@ public class NPCTurn : UnitMovement
                 alredyMoved = false;
                 TurnManager.EndUnitTurn();
             }
-        }
+        }   
     }
 
     void CalculatePath() {
@@ -60,14 +60,15 @@ public class NPCTurn : UnitMovement
         Vector3 distance = new Vector3();
         distance = target.transform.position - transform.position;
 
-        if (Mathf.Abs(distance.magnitude) > 1)
-        {
-            target.GetComponent<BaseStats>().HP -= this.GetComponent<BaseStats>().RangeAtack;
-            alredyAttack = true;
-        }
-        else
+        //if (Mathf.Abs(distance.magnitude) > 1)
+        //{
+        //    target.GetComponent<BaseStats>().HP -= this.GetComponent<BaseStats>().RangeAtack;
+        //    alredyAttack = true;
+        //}
+        if(Mathf.Abs(distance.magnitude) < 3)
         {
             target.GetComponent<BaseStats>().HP -= this.GetComponent<BaseStats>().MeleAtack;
+            ZombieAnimaController.isBiting = true;
             alredyAttack = true;
         }
 
@@ -75,5 +76,8 @@ public class NPCTurn : UnitMovement
 
         if (unit.GetComponent<BaseStats>().HP <= 0)
             UnitIsAlive(unit);
+        else if (alredyAttack)
+            unit.gameObject.GetComponentInChildren<CharacterAnimatorController>().lateHitAnimation = true;
+
     }
 }

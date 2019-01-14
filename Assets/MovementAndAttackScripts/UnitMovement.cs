@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngineInternal;
 
 public class UnitMovement : MonoBehaviour
 {
@@ -27,7 +28,8 @@ public class UnitMovement : MonoBehaviour
     protected bool alredyMoved = false;
 
     protected bool selectableTilesFinded = false;
-    protected AnimatorController AnimController;
+    protected CharacterAnimatorController CharacterAnimController;
+    protected ZombieAnimatorController ZombieAnimaController;
 
     [HideInInspector]
     public Tile actualTargetTile;
@@ -37,7 +39,8 @@ public class UnitMovement : MonoBehaviour
         halfHeight = GetComponent<Collider>().bounds.extents.y; //Przypisanie wysokosci jednostki nad ziemia do zmiennej 
 
         CenterPosition();
-        AnimController = GetComponentInChildren<AnimatorController>();
+        CharacterAnimController = GetComponentInChildren<CharacterAnimatorController>();
+        ZombieAnimaController = GetComponentInChildren<ZombieAnimatorController>();
         TurnManager.AddUnit(this); //Dodanie jednostki
     }
 
@@ -347,11 +350,12 @@ public class UnitMovement : MonoBehaviour
 
     protected void UnitIsAlive(UnitMovement unit)
     {
-        Debug.Log(unit.GetComponent<BaseStats>().HP <= 0);
         if (unit.GetComponent<BaseStats>().HP <= 0)
         {
-            unit.AnimController.isDying = true;
-            Debug.Log("AddedToRemove");
+            if (unit.tag == "Player")
+                unit.GetComponentInChildren<CharacterAnimatorController>().lateDeathAnimation = true;
+            if (unit.tag == "NPC")
+                unit.GetComponentInChildren<ZombieAnimatorController>().lateDeathAnimation = true;
             TurnManager.RemoveUnit(unit);
         }
     }
@@ -363,6 +367,7 @@ public class UnitMovement : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
             RaycastHit hit;
+
             if (Physics.Raycast(ray, out hit))
             {
                 if (hit.collider.tag == "Tile")
@@ -381,7 +386,14 @@ public class UnitMovement : MonoBehaviour
 
         if (hit.collider.GetComponent<BaseStats>().HP > 0)
         {
+            removeSelectedTileByMouse();
+
             RingSelectedEnemy.SetActiveRing();
+
+            heading = hit.collider.transform.position - transform.position;
+            heading.Normalize();
+            transform.forward = heading;
+
             if (currentSelectedObj == SelectedObj.enemy && RingInTheSamePosition(hit))
             {
                 currentSelectedObj = SelectedObj.none;
@@ -398,6 +410,8 @@ public class UnitMovement : MonoBehaviour
     }
 
     private void RunIfMoveAction(RaycastHit hit) {
+
+        RingSelectedEnemy.SetDeactiveRing();
 
         Tile t = hit.collider.GetComponent<Tile>();
 
@@ -423,6 +437,16 @@ public class UnitMovement : MonoBehaviour
                 t.GetComponent<Renderer>().material.color = Color.blue;
             }
         }
+    }
+
+    private void removeSelectedTileByMouse()
+    {
+        if (!alredyMoved)
+            foreach (Tile tile in selectableTiles)
+            {
+                if (tile.GetComponent<Renderer>().material.color == Color.blue)
+                    tile.GetComponent<Renderer>().material.color = Color.red;
+            }
     }
 
     private bool RingInTheSamePosition(RaycastHit hit)
@@ -454,23 +478,28 @@ public class UnitMovement : MonoBehaviour
         distance = hit.collider.transform.position - transform.position;
         if (Mathf.Abs(distance.magnitude)<=this.GetComponent<FieldOfView>().viewRadius)
         {
-        if (Mathf.Abs(distance.magnitude) > 1)
-            hit.collider.GetComponent<BaseStats>().HP -= this.GetComponent<BaseStats>().RangeAtack;
-        else
-            hit.collider.GetComponent<BaseStats>().HP -= this.GetComponent<BaseStats>().MeleAtack;
-        alredyAttack = true;
-        }
-        if (hit.collider.GetComponent<BaseStats>().HP <= 0)
-        {
-            RingSelectedEnemy.SetDeactiveRing();
+            if (Mathf.Abs(distance.magnitude) >= 3)
+            {
+                hit.collider.GetComponent<BaseStats>().HP -= this.GetComponent<BaseStats>().RangeAtack;
+                CharacterAnimController.isShooting = true;
+            }
+            else if(Mathf.Abs(distance.magnitude) < 3)
+            {
+                hit.collider.GetComponent<BaseStats>().HP -= this.GetComponent<BaseStats>().MeleAtack;
+                CharacterAnimController.isPunching = true;
+            }
+
+            alredyAttack = true;
         }
 
         UnitMovement unit = hit.collider.GetComponent<UnitMovement>();
         if (unit.GetComponent<BaseStats>().HP <= 0)
         {
-            unit.GetComponent<AnimatorController>().isDying = true;
+            RingSelectedEnemy.SetDeactiveRing();
             UnitIsAlive(unit);
         }
+        else if (alredyAttack)
+            unit.GetComponentInChildren<ZombieAnimatorController>().lateHitAnimation = true;
     }
 
     public void BeginUnitTurn() //Rozpoczyna ture
