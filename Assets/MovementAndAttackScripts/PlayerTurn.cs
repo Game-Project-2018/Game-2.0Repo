@@ -23,6 +23,8 @@ public class PlayerTurn : UnitMovement
 
         RingCurentUnitTurn.GetUnitPosition(this);
 
+        Weapon.setActivePlayer(gameObject);
+
         if (RingCurentUnitTurn.ringStatus != true)
         {
             RingCurentUnitTurn.SetActiveRing();

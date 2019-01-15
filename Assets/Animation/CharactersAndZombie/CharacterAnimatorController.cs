@@ -13,8 +13,11 @@ public class CharacterAnimatorController : MonoBehaviour {
     public bool lateHitAnimation = false;
     public bool lateDeathAnimation = false;
 
+    private Weapon weapon;
+
     void Start () {
         m_animator = GetComponent<Animator>();
+        weapon = GameObject.FindGameObjectWithTag("ActivePlayer").GetComponent<Weapon>();
     }
 	
 	void Update () {
@@ -61,6 +64,7 @@ public class CharacterAnimatorController : MonoBehaviour {
     {
         yield return new WaitForSeconds(time);
         isShooting = false;
+        weapon.setGunVisible(false);
     }
 
     IEnumerator DyingAnimation(float time)

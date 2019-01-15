@@ -30,6 +30,7 @@ public class UnitMovement : MonoBehaviour
     protected bool selectableTilesFinded = false;
     protected CharacterAnimatorController CharacterAnimController;
     protected ZombieAnimatorController ZombieAnimaController;
+    protected Weapon Weapon;
 
     [HideInInspector]
     public Tile actualTargetTile;
@@ -37,10 +38,10 @@ public class UnitMovement : MonoBehaviour
     protected void Initialization()
     {
         halfHeight = GetComponent<Collider>().bounds.extents.y; //Przypisanie wysokosci jednostki nad ziemia do zmiennej 
-
         CenterPosition();
         CharacterAnimController = GetComponentInChildren<CharacterAnimatorController>();
         ZombieAnimaController = GetComponentInChildren<ZombieAnimatorController>();
+        Weapon = GameObject.FindGameObjectWithTag("ActivePlayer").GetComponent<Weapon>();
         TurnManager.AddUnit(this); //Dodanie jednostki
     }
 
@@ -480,6 +481,7 @@ public class UnitMovement : MonoBehaviour
         {
             if (Mathf.Abs(distance.magnitude) >= 3)
             {
+                Weapon.setGunVisible(true);
                 hit.collider.GetComponent<BaseStats>().HP -= this.GetComponent<BaseStats>().RangeAtack;
                 CharacterAnimController.isShooting = true;
             }
