@@ -103,11 +103,11 @@ public class PlayerMovementWorldMap : MonoBehaviour {
 
             random = Random.Range(0, 100);
             //random = -20;
-            if(random >= 0 && random < 20 + modification)
-            {
-                StartZombieAttack();
-                StopPlayer();
-            }
+           // if(random >= 0 && random < 20 + modification)
+            //{
+                //StartZombieAttack();
+                //StopPlayer();
+           // }
         }
         oldHour = actualHour;
         //day and hour
