@@ -15,49 +15,50 @@ public class Player_Creator : MonoBehaviour {
     public GameObject Soldier;
     void Awake() {
          bool drunk = false, doctor = false, survivalist = false, soldier = false, mother = false;
-
-        for (int i=0;i<Data_static.Player_tab.Count;i++)
+        if (Data_static.Player_tab != null)
         {
-            if (Data_static.Player_tab[i].name == "survivalist")
+            for (int i = 0; i < Data_static.Player_tab.Count; i++)
             {
-                Activate(Survivalist,i);
-                survivalist = true;
+                if (Data_static.Player_tab[i].name == "survivalist")
+                {
+                    Activate(Survivalist, i);
+                    survivalist = true;
+                }
+                else if (Data_static.Player_tab[i].name == "doctor")
+                {
+                    Activate(Doctor, i);
+                    doctor = true;
+                }
+                else if (Data_static.Player_tab[i].name == "drunk")
+                {
+                    Activate(Drunk, i);
+                    drunk = true;
+                }
+                else if (Data_static.Player_tab[i].name == "soldier")
+                {
+                    Activate(Soldier, i);
+                    soldier = true;
+                }
+                else if (Data_static.Player_tab[i].name == "mother")
+                {
+                    Activate(Mother, i);
+                    mother = true;
+                }
+
             }
-            else if (Data_static.Player_tab[i].name == "doctor")
-            {
-                Activate(Doctor, i);
-                doctor = true;
-            }
-            else if (Data_static.Player_tab[i].name == "drunk")
-            {
-                Activate(Drunk, i);
-                drunk = true;
-            }
-            else if (Data_static.Player_tab[i].name == "soldier")
-            {
-                Activate(Soldier, i);
-                soldier = true;
-            }
-            else if (Data_static.Player_tab[i].name == "mother")
-            {
-                Activate(Mother, i);
-                mother = true;
-            }
+            if (!survivalist)
+                Deactivate(Survivalist);
+            if (!doctor)
+                Deactivate(Doctor);
+            if (!drunk)
+                Deactivate(Drunk);
+            if (!soldier)
+                Deactivate(Soldier);
+            if (!mother)
+                Deactivate(Mother);
+            //if (Data_static.Player_tab[i].name != "drunk")
 
         }
-        if (!survivalist)
-            Deactivate(Survivalist);
-        if (!doctor)
-            Deactivate(Doctor);
-        if (!drunk)
-            Deactivate(Drunk);
-        if (!soldier)
-            Deactivate(Soldier);
-        if (!mother)
-            Deactivate(Mother);
-         //if (Data_static.Player_tab[i].name != "drunk")
-
-
     }
 
     void Deactivate(GameObject G)
