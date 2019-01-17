@@ -14,9 +14,12 @@ public class Player_stats{
 	}
 }
 public static class Data_static {
-	private static  List<Player_stats> playerTab;
 
-	public static List<Player_stats> Player_tab
+    private static  List<Player_stats> playerTab;
+    public static bool PlayerWinBattle { get; set; }
+    public static Vector3 GlobalPlayerPosition { get; set; }
+
+    public static List<Player_stats> Player_tab
 	{
 		get 
 		{
@@ -27,10 +30,5 @@ public static class Data_static {
 			playerTab = value;
 		}
 	}
-
-	
-
-
-
 }
 

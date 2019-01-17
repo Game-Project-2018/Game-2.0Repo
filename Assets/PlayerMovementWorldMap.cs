@@ -24,7 +24,10 @@ public class PlayerMovementWorldMap : MonoBehaviour {
     const int LEFT_MOUSE_BUTTON = 0;
 
     // Use this for initialization
-    void Start() {
+    void Start()
+    {
+        if (Data_static.PlayerWinBattle)
+            transform.position = Data_static.GlobalPlayerPosition;
         instance = this;
         //teamMembers = Data_static.Player_tab.Count;
         targetPosition = transform.position;
@@ -167,9 +170,10 @@ public class PlayerMovementWorldMap : MonoBehaviour {
     }
 
     public Canvas ZombieAttack;
-    public void StartZombieAttack()
-    {
+    public void StartZombieAttack() {
+
         StopPlayer();
+        Data_static.GlobalPlayerPosition = transform.position;
         ZombieAttack.enabled = true;
     }
     public Canvas NoSupplies;
