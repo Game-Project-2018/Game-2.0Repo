@@ -4,24 +4,21 @@ using UnityEngine;
 
 public class Camera_scroll : MonoBehaviour {
     Camera cam;
-   // public GameObject player;
-   // GameObject acctivePlayer;
-   // public float x;
-   // public float z;
-    // Use this for initialization
+
+    public float min = 2;
+    public float max = 7;
+
     void Start () {
         cam = this.GetComponent<Camera>();
-       // acctivePlayer = player.GetComponent<AcctivePlayer>().Player;
-
     }
 	
-	// Update is called once per frame
 	void Update () {
      
         
         if (Input.GetAxis("Mouse ScrollWheel") != 0f) 
         {
-            cam.orthographicSize += (Input.GetAxis("Mouse ScrollWheel") * -1);
+            if(cam.orthographicSize + (Input.GetAxis("Mouse ScrollWheel") * -1) > min && cam.orthographicSize + (Input.GetAxis("Mouse ScrollWheel") * -1) < max)
+                cam.orthographicSize += (Input.GetAxis("Mouse ScrollWheel") * -1);
         }
 
     }

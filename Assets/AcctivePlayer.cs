@@ -4,16 +4,15 @@ using UnityEngine;
 
 public class AcctivePlayer : MonoBehaviour {
     public Camera cam;
-	 public GameObject Player;
-	// Use this for initialization
+	public GameObject Player;
+
 	void Start () {
 		Player = null;
-       
 	}
 	
-	// Update is called once per frame
-	void LateUpdate () {
-        if (Player != null)
-            cam.transform.LookAt(Player.transform.position);
-    }
+	void LateUpdate ()
+	{
+	    if (Player != null)
+	        cam.transform.LookAt(Player.transform.position);
+	}
 }
