@@ -13,7 +13,7 @@ public class Camera_scroll : MonoBehaviour {
 	void Update () {
         if (Input.GetAxis("Mouse ScrollWheel") != 0f) 
         {
-            cam.orthographicSize += Input.GetAxis("Mouse ScrollWheel");
+            cam.orthographicSize += (Input.GetAxis("Mouse ScrollWheel") * -1);
         }
 
     }

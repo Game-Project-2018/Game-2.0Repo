@@ -30,8 +30,6 @@ public class Character_Select : MonoBehaviour {
 			}
             drunkG.SetActive(false);
         }
-		Debug.Log (Data_static.Player_tab [0].name);
-        
 	}
 
 
