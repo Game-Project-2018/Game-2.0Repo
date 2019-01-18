@@ -23,28 +23,28 @@ public class Weapon : MonoBehaviour
 		
         if(gunDoctor)
             GunDoctor.SetActive(true);
-        else
+        else if(gunDoctor!=null)
             GunDoctor.SetActive(false);
 
 	    if (gunDrunk)
 	        GunDrunk.SetActive(true);
-	    else
-	        GunDrunk.SetActive(false);
+	    else if(gunDrunk != null)
+            GunDrunk.SetActive(false);
 
 	    if (gunMother)
 	        GunMother.SetActive(true);
-	    else
-	        GunMother.SetActive(false);
+	    else if (gunMother != null)
+            GunMother.SetActive(false);
 
 	    if (gunSolider)
 	        GunSolider.SetActive(true);
-	    else
-	        GunSolider.SetActive(false);
+	    else if (gunSolider != null)
+            GunSolider.SetActive(false);
 
 	    if (gunSurvivalist)
 	        GunSurvivalist.SetActive(true);
-	    else
-	        GunSurvivalist.SetActive(false);
+	    else if (gunSurvivalist != null)
+            GunSurvivalist.SetActive(false);
     }
 
     public void setGunVisible(bool gunStatus)

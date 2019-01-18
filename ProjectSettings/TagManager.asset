@@ -21,6 +21,8 @@ TagManager:
   - City
   - Icon
   - ActivePlayer
+  - Obstacles
+  - EndGameImage
   layers:
   - Default
   - TransparentFX
@@ -35,7 +37,7 @@ TagManager:
   - Map & Obj
   - Forest
   - City
-  - 
+  - Obstacles
   - 
   - 
   - 

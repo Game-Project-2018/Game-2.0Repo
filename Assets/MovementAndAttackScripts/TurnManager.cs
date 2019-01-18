@@ -2,20 +2,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TurnManager : MonoBehaviour {
 
-    static Dictionary<string, List<UnitMovement>> teams = new Dictionary<string, List<UnitMovement>>();
+    public static Dictionary<string, List<UnitMovement>> teams = new Dictionary<string, List<UnitMovement>>();
     static Queue<string> teamTag = new Queue<string>();
     static Queue<UnitMovement> turnOfTheTeam = new Queue<UnitMovement>();
 
     static List<UnitMovement> unitsInGameList = new List<UnitMovement>();
     static List<Tile> tileMap = new List<Tile>();
-
     private bool firstTurn = true;
     private static string currentTeam = "NONE";
     private static string currentUnit = "NONE";
     public static bool forceEndTeamTurn = false;
+    public static CheckGameStatus status;
+
+    void Start() {
+
+        GameObject ap = GameObject.FindGameObjectWithTag("ActivePlayer");
+        status = ap.GetComponent<CheckGameStatus>();
+    }
 
     void Update() {
 
@@ -32,10 +39,12 @@ public class TurnManager : MonoBehaviour {
                 CopyUnitsToTeamsQueue();
             }
 
-            if (teams["Player"].Count != 0)
+            if (teams["Player"].Count != 0 && teams["NPC"].Count != 0)
                 InitializationTeamTurnQueue();
-            else
-                EndOfGame();
+            else if (teams["NPC"].Count == 0)
+                status.GoToWorldMap();
+            else if(teams["Player"].Count == 0)
+                status.EndOfGame();
         }
     }
 
@@ -275,18 +284,4 @@ public class TurnManager : MonoBehaviour {
         forceEndTeamTurn = true;
     }
 
-    void EndOfGame()
-    {
-        
-    }
-
-    void GoToWorldMap()
-    {
-
-    }
-
-    public static void CheckIfEndOfBattle(UnitMovement unit)
-    {
-
-    }
 }

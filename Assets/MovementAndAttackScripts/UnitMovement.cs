@@ -15,7 +15,6 @@ public class UnitMovement : MonoBehaviour
     SelectedObj currentSelectedObj = SelectedObj.none;
 
     List<Tile> selectableTiles = new List<Tile>();
-
     Stack<Tile> path = new Stack<Tile>();
     Tile currentTile;
 
@@ -89,6 +88,7 @@ public class UnitMovement : MonoBehaviour
         GetCurrentTile();
 
         Queue<Tile> process = new Queue<Tile>();
+        TileCollision collision;
 
         process.Enqueue(currentTile);
         currentTile.visited = true;
@@ -96,30 +96,33 @@ public class UnitMovement : MonoBehaviour
         while (process.Count > 0)
         {
             Tile t = process.Dequeue();
-
-            if (t.transform.position.y == 0)
+            collision = t.GetComponent<TileCollision>();
+            if (!collision.collisionWithObstacles)
             {
-                selectableTiles.Add(t);
-                t.selectable = true;
-                if (tag == "Player")
+                if (t.transform.position.y == 0)
                 {
-                    if (t.GetComponent<Renderer>().material.color != Color.blue)
-                        if (t.GetComponent<Renderer>().material.color != Color.red)
-                            t.GetComponent<Renderer>().material.color = Color.red;
-                    if (currentTile.GetComponent<Renderer>().material.color != Color.white)
-                        currentTile.GetComponent<Renderer>().material.color = Color.white;
-                }
-
-                if (t.distance < moveRange)
-                {
-                    foreach (Tile tile in t.adjacencyList)
+                    selectableTiles.Add(t);
+                    t.selectable = true;
+                    if (tag == "Player")
                     {
-                        if (!tile.visited)
+                        if (t.GetComponent<Renderer>().material.color != Color.blue)
+                            if (t.GetComponent<Renderer>().material.color != Color.red)
+                                t.GetComponent<Renderer>().material.color = Color.red;
+                        if (currentTile.GetComponent<Renderer>().material.color != Color.white)
+                            currentTile.GetComponent<Renderer>().material.color = Color.white;
+                    }
+
+                    if (t.distance < moveRange)
+                    {
+                        foreach (Tile tile in t.adjacencyList)
                         {
-                            tile.parent = t;
-                            tile.visited = true;
-                            tile.distance = 1 + t.distance;
-                            process.Enqueue(tile);
+                            if (!tile.visited)
+                            {
+                                tile.parent = t;
+                                tile.visited = true;
+                                tile.distance = 1 + t.distance;
+                                process.Enqueue(tile);
+                            }
                         }
                     }
                 }

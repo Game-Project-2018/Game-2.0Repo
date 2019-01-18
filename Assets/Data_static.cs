@@ -8,8 +8,7 @@ public class Player_stats{
     public int DistanceDMG = 2;
     public int MeleDMG = 3;
 	public string name; 
-	public Player_stats (string name)
-	{
+	public Player_stats (string name) {
 		this.name = name;
 	}
 }

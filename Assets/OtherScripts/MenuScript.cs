@@ -27,4 +27,15 @@ public class MenuScript
     //        t.AddComponent<Tile>();
     //    }
     //}
+
+    //[MenuItem("Tools/Assign TileCoolision Script")]
+    //public static void AssignTileCollisionScript()
+    //{
+    //    GameObject[] tiles = GameObject.FindGameObjectsWithTag("Tile");
+
+    //    foreach (GameObject t in tiles)
+    //    {
+    //        t.AddComponent<TileCollision>();
+    //    }
+    //}
 }

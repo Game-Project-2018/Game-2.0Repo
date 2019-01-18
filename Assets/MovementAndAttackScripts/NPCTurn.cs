@@ -6,13 +6,11 @@ public class NPCTurn : UnitMovement
 {
     GameObject target;
 
-    // Use this for initialization
-    void Start()
-    {
+    void Start() {
+
         Initialization();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (!unitTurn)
